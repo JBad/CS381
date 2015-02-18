@@ -15,6 +15,7 @@ Define_Module(ClientApp);
 
 // constructor
 ClientApp::ClientApp(void) {
+    cout << "end client const" << endl;
 }
 
 // destructor
@@ -25,19 +26,20 @@ ClientApp::~ClientApp(void) {
 void ClientApp::initialize(void) {
     cSimpleModule::initialize();
 
+
+
     this->localAddress_ = this->par("localAddress").stringValue();
     this->localPort_ = this->par("localPort");
     this->connectPort_ = this->par("connectPort");
 
     this->connectAddress_ = this->par("connectAddress").stringValue();
 
-    socket_->setCallbackObject(this, NULL);
-    this->name_ = this->par("name").stringValue();
+    cout << "start client init" << endl;
 
     cMessage *timer_msg = new cMessage("timer");
-    this->scheduleAt(simTime() + exponential(5.0), timer_msg);
+    this->scheduleAt(simTime() + exponential(0.001), timer_msg);
 
-    cerr << "end client init" << endl;
+    cout << "end client init" << endl;
 }
 
 /** handle the timeout method */
@@ -58,8 +60,7 @@ void ClientApp::handleMessage(cMessage *msg) {
     if (msg->isSelfMessage()) {
         this->handleTimer(msg);
     } else {
-        this->send(msg, "toXport");
-        cMessage *newMsg = new cMessage("Hello");
+        this->socket_->processMessage(msg);
     }
 
     return;

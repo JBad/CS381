@@ -22,7 +22,7 @@ simple ClientApp like ITCPApp {
         string localAddress = default("");
         int localPort = default(1000);
         string connectAddress = default("");
-        int connectPort = default(1000);
+        int connectPort = default(1001);
         string dataTransferMode @enum ("bytecount", "object", "bytestream") = default("object");
         
     gates:
@@ -33,7 +33,7 @@ simple ClientApp like ITCPApp {
 simple ServerApp like ITCPApp {
     parameters:
         string localAddress = default("");
-        int localPort = default(1000);
+        int localPort = default(1001);
         string connectAddress = default("");
         int connectPort = default(1000);
         string dataTransferMode @enum ("bytecount", "object", "bytestream") = default("object");

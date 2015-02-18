@@ -38,6 +38,9 @@ void ServerApp::initialize (void)
     //this->name_ = this->par ("name").stringValue();
   // if I am a client I initiate the transfer
 
+    this->socket_ = new TCPSocket ();
+
+
     this->socket_->bind (this->localAddress_.length () ?
             IPvXAddressResolver ().resolve (this->localAddress_.c_str ()) : IPvXAddress (),
             this->localPort_);
