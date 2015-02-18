@@ -3,6 +3,7 @@
 	<name>CS381_RDT_1_0</name>
 	<comment></comment>
 	<projects>
+		<project>inet</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

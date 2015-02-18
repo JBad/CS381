@@ -1,3 +1,3 @@
-package cs381_rdt_1_0.simulations;
+package cs381.simulations;
 
 @license(LGPL);

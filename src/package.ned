@@ -1,3 +1,3 @@
-package cs381_rdt_1_0;
+package cs381;
 
 @license(LGPL);

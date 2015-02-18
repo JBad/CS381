@@ -1,0 +1,162 @@
+// Implementation of the module.
+// Adapted from the tictoc tutorial
+
+
+#include "CSAppMsg_m.h"
+#include "ServerApp.h"
+
+#include "IPvXAddressResolver.h"
+
+// the module class is now registered with omnet++ and tells it to look for
+// a corresponding NED file for a simple module definition of the same name.
+// ** Never put this inside a header file **
+Define_Module (ServerApp);
+
+// ******* Peer SimpleModule *******
+
+// constructor
+ServerApp::ServerApp (void)
+  : cSimpleModule ()
+{
+}
+
+// destructor
+ServerApp::~ServerApp (void)
+{
+}
+
+// overridden methods
+void ServerApp::initialize (void)
+{
+
+    this->localAddress_ = this->par ("localAddress").stringValue ();
+    this->localPort_ = this->par ("localPort");
+    this->connectPort_ = this->par ("connectPort");
+
+
+  // retrieve our name parameter.
+    //this->name_ = this->par ("name").stringValue();
+  // if I am a client I initiate the transfer
+
+    this->socket_->bind (this->localAddress_.length () ?
+            IPvXAddressResolver ().resolve (this->localAddress_.c_str ()) : IPvXAddress (),
+            this->localPort_);
+
+    // register ourselves as the callback object
+    bool *passive = new bool (true);
+    this->socket_->setCallbackObject (this, passive);  // send the flag
+
+    // do not forget to set the outgoing gate
+    this->socket_->setOutputGate (gate ("tcpOut"));
+
+    // now listen for incoming connections.  This version is the forking version where
+    // upon every new incoming connection, a new socket is created.
+    this->socket_->listen ();
+
+    EV << "+++ Peer: " << this->localAddress_ << " created a listening socket with "
+       << "connection ID = " << this->socket_->getConnectionId () << " +++" << endl;
+
+    // now save this socket in our map
+    this->socketMap_.addSocket (this->socket_);
+
+    cerr << "end client init" << endl;
+}
+
+void ServerApp::socketEstablished(int connId, void *yourPtr) {
+    EV << "=== Peer: " << this->localAddress_
+       << " received socketEstablished message on connID " << connId << " ===" << endl;
+}
+
+void ServerApp::socketDataArrived(int connId, void *, cPacket *msg, bool urgent) {
+    EV << "=== Peer: " << this->localAddress_
+       << " received socketDataArrived message. ===" << endl;
+
+    // incoming request may be of different types
+    CS_Packet *packet = dynamic_cast<CS_Packet *> (msg);
+    if (!packet) {
+        return;
+    }
+
+    if(((CS_MSG_TYPE)packet->getType()) == CS_REQUEST) {
+        CS_Req *req = dynamic_cast<CS_Req *> (msg);
+        if (!req) {
+            EV << "Arriving packet is not of type CS_Req" << endl;
+        } else {
+            EV << "Arriving packet: Requestor ID = " << req->getId ()
+               << ", Requested filename = " << req->getFile ()  << endl;
+
+            streampos size;
+            char * memblock;
+
+            ifstream file (req->getFile(),ios::in|ios::binary|ios::ate);
+
+            if (file.is_open())
+            {
+                size = file.tellg();
+                memblock = new char [size];
+                file.seekg (0, ios::beg);
+                file.read (memblock, size);
+                file.close();
+            } else {
+                memblock = new char[8];
+                size = 0;
+            }
+            // now send a response
+            this->sendResponse (connId, this->localAddress_.c_str (), memblock, size);
+            delete[] memblock;
+        }
+    }
+
+    delete msg;
+}
+
+void ServerApp::sendResponse (int connId, const char *id, char* data, unsigned long size) {
+    EV << "=== Peer: " << this->localAddress_ << " sendResponse. "
+       << "Sending ID: " << id << ", size: " << size << " ===" << endl;
+
+    cMessage *temp_msg = new cMessage ("temp");
+    TCPCommand *temp_cmd = new TCPCommand ();
+    temp_cmd->setConnId (connId);
+    temp_msg->setControlInfo (temp_cmd);
+
+    TCPSocket *socket = this->socketMap_.findSocketFor (temp_msg);
+
+    if (!socket) {
+        EV << ">>> Cannot find socket to send request <<< " << endl;
+    } else {
+        CS_Resp *resp = new CS_Resp ();
+        resp->setType ((int)CS_RESPONSE);
+        resp->setId (id);
+        resp->setSize (size);
+        // need to set the byte length else nothing gets sent as I found the hard way
+        resp->setByteLength (128);  // I think we can set any length we want :-)
+        resp->setDataArraySize(size);
+        for(int i = 0; i < size; ++i)
+            resp->setData(i, data[i]);
+        socket->send (resp);
+    }
+
+    // cleanup
+    delete temp_msg;
+}
+
+void ServerApp::socketPeerClosed(int connId, void *) {
+    cMessage *temp_msg = new cMessage ("temp");
+    TCPCommand *temp_cmd = new TCPCommand ();
+    temp_cmd->setConnId (connId);
+    temp_msg->setControlInfo (temp_cmd);
+
+    TCPSocket *socket = this->socketMap_.findSocketFor (temp_msg);
+    this->socketMap_.removeSocket(socket);
+}
+
+// there was no need for us to have provided this method, however, if
+// you want to gather statistics of your simulation, this is the
+// method you need to add
+void ServerApp::finish (void)
+{
+    EV << "=== finish called" << endl;
+    // finalize any statistics collection
+}
+
+// ******* RDT_1_0 SimpleModule *******

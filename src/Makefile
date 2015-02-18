@@ -1,12 +1,12 @@
 #
-# OMNeT++/OMNEST Makefile for CS381_Client_Server
+# OMNeT++/OMNEST Makefile for CS381
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep
+#  opp_makemake -f --deep -I../../inet/src/linklayer/ieee80211/radio -I../../inet/src/networklayer/routing/aodv -I../../inet/src/networklayer/common -I../../inet/src/networklayer/icmpv6 -I../../inet/src -I../../inet/src/world/obstacles -I../../inet/src/networklayer/xmipv6 -I../../inet/src/networklayer/contract -I../../inet/src/networklayer/autorouting/ipv4 -I../../inet/src/util -I../../inet/src/transport/contract -I../../inet/src/linklayer/common -I../../inet/src/status -I../../inet/src/linklayer/radio/propagation -I../../inet/src/linklayer/ieee80211/radio/errormodel -I../../inet/src/linklayer/radio -I../../inet/src/util/headerserializers/tcp -I../../inet/src/networklayer/ipv4 -I../../inet/src/mobility/contract -I../../inet/src/util/headerserializers/ipv4 -I../../inet/src/base -I../../inet/src/util/headerserializers -I../../inet/src/world/radio -I../../inet/src/linklayer/ieee80211/mac -I../../inet/src/networklayer/ipv6 -I../../inet/src/transport/sctp -I../../inet/src/util/headerserializers/udp -I../../inet/src/networklayer/ipv6tunneling -I../../inet/src/applications/pingapp -I../../inet/src/battery/models -I../../inet/src/util/headerserializers/ipv6 -I../../inet/src/util/headerserializers/sctp -I../../inet/src/linklayer/contract -I../../inet/src/transport/tcp_common -I../../inet/src/networklayer/arp -I../../inet/src/transport/udp -L../../inet/out/$$\(CONFIGNAME\)/src -linet -DINET_IMPORT -KINET_PROJ=../../inet
 #
 
 # Name of target to be created (-o option)
-TARGET = CS381_Client_Server$(EXE_SUFFIX)
+TARGET = CS381$(EXE_SUFFIX)
 
 # User interface (uncomment one) (-u option)
 USERIF_LIBS = $(ALL_ENV_LIBS) # that is, $(TKENV_LIBS) $(CMDENV_LIBS)
@@ -14,13 +14,51 @@ USERIF_LIBS = $(ALL_ENV_LIBS) # that is, $(TKENV_LIBS) $(CMDENV_LIBS)
 #USERIF_LIBS = $(TKENV_LIBS)
 
 # C++ include paths (with -I)
-INCLUDE_PATH = -I.
+INCLUDE_PATH = \
+    -I../../inet/src/linklayer/ieee80211/radio \
+    -I../../inet/src/networklayer/routing/aodv \
+    -I../../inet/src/networklayer/common \
+    -I../../inet/src/networklayer/icmpv6 \
+    -I../../inet/src \
+    -I../../inet/src/world/obstacles \
+    -I../../inet/src/networklayer/xmipv6 \
+    -I../../inet/src/networklayer/contract \
+    -I../../inet/src/networklayer/autorouting/ipv4 \
+    -I../../inet/src/util \
+    -I../../inet/src/transport/contract \
+    -I../../inet/src/linklayer/common \
+    -I../../inet/src/status \
+    -I../../inet/src/linklayer/radio/propagation \
+    -I../../inet/src/linklayer/ieee80211/radio/errormodel \
+    -I../../inet/src/linklayer/radio \
+    -I../../inet/src/util/headerserializers/tcp \
+    -I../../inet/src/networklayer/ipv4 \
+    -I../../inet/src/mobility/contract \
+    -I../../inet/src/util/headerserializers/ipv4 \
+    -I../../inet/src/base \
+    -I../../inet/src/util/headerserializers \
+    -I../../inet/src/world/radio \
+    -I../../inet/src/linklayer/ieee80211/mac \
+    -I../../inet/src/networklayer/ipv6 \
+    -I../../inet/src/transport/sctp \
+    -I../../inet/src/util/headerserializers/udp \
+    -I../../inet/src/networklayer/ipv6tunneling \
+    -I../../inet/src/applications/pingapp \
+    -I../../inet/src/battery/models \
+    -I../../inet/src/util/headerserializers/ipv6 \
+    -I../../inet/src/util/headerserializers/sctp \
+    -I../../inet/src/linklayer/contract \
+    -I../../inet/src/transport/tcp_common \
+    -I../../inet/src/networklayer/arp \
+    -I../../inet/src/transport/udp \
+    -I.
 
 # Additional object and library files to link with
 EXTRA_OBJS =
 
 # Additional libraries (-L, -l options)
-LIBS =
+LIBS = -L../../inet/out/$(CONFIGNAME)/src  -linet
+LIBS += -Wl,-rpath,`abspath ../../inet/out/$(CONFIGNAME)/src`
 
 # Output directory
 PROJECT_OUTPUT_DIR = ../out
@@ -28,10 +66,14 @@ PROJECTRELATIVE_PATH = src
 O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cpp and .msg files
-OBJS = $O/Client.o $O/Server.o
+OBJS = $O/ClientApp.o $O/ServerApp.o $O/CSAppMsg_m.o
 
 # Message files
-MSGFILES =
+MSGFILES = \
+    CSAppMsg.msg
+
+# Other makefile variables (-K)
+INET_PROJ=../../inet
 
 #------------------------------------------------------------------------------
 
@@ -57,7 +99,7 @@ include $(CONFIGFILE)
 OMNETPP_LIB_SUBDIR = $(OMNETPP_LIB_DIR)/$(TOOLCHAIN_NAME)
 OMNETPP_LIBS = -L"$(OMNETPP_LIB_SUBDIR)" -L"$(OMNETPP_LIB_DIR)" -loppmain$D $(USERIF_LIBS) $(KERNEL_LIBS) $(SYS_LIBS)
 
-COPTS = $(CFLAGS)  $(INCLUDE_PATH) -I$(OMNETPP_INCL_DIR)
+COPTS = $(CFLAGS) -DINET_IMPORT $(INCLUDE_PATH) -I$(OMNETPP_INCL_DIR)
 MSGCOPTS = $(INCLUDE_PATH)
 
 # we want to recompile everything if COPTS changes,
@@ -103,7 +145,7 @@ msgheaders: $(MSGFILES:.msg=_m.h)
 clean:
 	$(qecho) Cleaning...
 	$(Q)-rm -rf $O
-	$(Q)-rm -f CS381_Client_Server CS381_Client_Server.exe libCS381_Client_Server.so libCS381_Client_Server.a libCS381_Client_Server.dll libCS381_Client_Server.dylib
+	$(Q)-rm -f CS381 CS381.exe libCS381.so libCS381.a libCS381.dll libCS381.dylib
 	$(Q)-rm -f ./*_m.cpp ./*_m.h
 
 cleanall: clean
@@ -114,8 +156,28 @@ depend:
 	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cpp
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
-$O/Client.o: Client.cpp \
-	Client.h
-$O/Server.o: Server.cpp \
-	Server.h
+$O/ClientApp.o: ClientApp.cpp \
+	CSAppMsg_m.h \
+	ClientApp.h \
+	$(INET_PROJ)/src/base/Compat.h \
+	$(INET_PROJ)/src/base/INETDefs.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv4Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv6Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddress.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddressResolver.h \
+	$(INET_PROJ)/src/transport/contract/TCPCommand_m.h \
+	$(INET_PROJ)/src/transport/contract/TCPSocket.h \
+	$(INET_PROJ)/src/transport/contract/TCPSocketMap.h
+$O/ServerApp.o: ServerApp.cpp \
+	CSAppMsg_m.h \
+	ServerApp.h \
+	$(INET_PROJ)/src/base/Compat.h \
+	$(INET_PROJ)/src/base/INETDefs.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv4Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv6Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddress.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddressResolver.h \
+	$(INET_PROJ)/src/transport/contract/TCPCommand_m.h \
+	$(INET_PROJ)/src/transport/contract/TCPSocket.h \
+	$(INET_PROJ)/src/transport/contract/TCPSocketMap.h
 
