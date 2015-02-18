@@ -1,0 +1,49 @@
+version 2
+run General-0-20150218-14:46:57-3601
+attr configname General
+attr datetime 20150218-14:46:57
+attr experiment General
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvars2 $repetition=0
+attr measurement ""
+attr network cs381.simulations.P2PFlatNet
+attr processid 3601
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+
+vector 8  P2PFlatNet.rte[0].ppp[0].queue  queueLength:vector  ETV
+attr interpolationmode  sample-hold
+attr title  "queue length, vector"
+vector 9  P2PFlatNet.rte[0].ppp[0].ppp  txState:vector  ETV
+attr interpolationmode  sample-hold
+attr title  "tx state, vector"
+vector 19  P2PFlatNet.rte[0].ppp[1].queue  queueLength:vector  ETV
+attr interpolationmode  sample-hold
+attr title  "queue length, vector"
+vector 20  P2PFlatNet.rte[0].ppp[1].ppp  txState:vector  ETV
+attr interpolationmode  sample-hold
+attr title  "tx state, vector"
+vector 35  P2PFlatNet.server1.ppp[0].queue  queueLength:vector  ETV
+attr interpolationmode  sample-hold
+attr title  "queue length, vector"
+vector 36  P2PFlatNet.server1.ppp[0].ppp  txState:vector  ETV
+attr interpolationmode  sample-hold
+attr title  "tx state, vector"
+vector 51  P2PFlatNet.client1.ppp[0].queue  queueLength:vector  ETV
+attr interpolationmode  sample-hold
+attr title  "queue length, vector"
+vector 52  P2PFlatNet.client1.ppp[0].ppp  txState:vector  ETV
+attr interpolationmode  sample-hold
+attr title  "tx state, vector"
+8	0	0	0
+9	0	0	0
+19	0	0	0
+20	0	0	0
+35	0	0	0
+36	0	0	0
+51	0	0	0
+52	0	0	0

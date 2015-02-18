@@ -36,8 +36,10 @@ void ClientApp::initialize(void) {
 
     cout << "start client init" << endl;
 
-    cMessage *timer_msg = new cMessage("timer");
-    this->scheduleAt(simTime() + exponential(0.001), timer_msg);
+    this->connect();
+
+    //cMessage *timer_msg = new cMessage("timer");
+    //this->scheduleAt(simTime() + exponential(0.001), timer_msg);
 
     cout << "end client init" << endl;
 }
@@ -68,6 +70,7 @@ void ClientApp::handleMessage(cMessage *msg) {
 
 // connect to peer i
 void ClientApp::connect() {
+    cout << "startConnect" << endl;
     EV << "=== Peer: " << this->localAddress_ << " received connect message"
               << endl;
     EV << "issuing connect command\n";
@@ -91,6 +94,7 @@ void ClientApp::connect() {
     EV << "+++ Peer: " << this->localAddress_ << " created a new socket with "
               << "connection ID = " << socket_->getConnectionId() << " ==="
               << endl;
+    cout << "endConnect" << endl;
 }
 
 // close the peer side

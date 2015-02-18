@@ -48,6 +48,8 @@ public:
 
   virtual void sendResponse (int connId, const char *id, char* data, unsigned long size);
 
+  virtual void handleMessage(cMessage *msg);
+
 private:
   string name_; // some name assigned to us
 

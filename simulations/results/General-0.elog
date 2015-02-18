@@ -1,3 +1,1188 @@
 E # 0 t 0 m 1 ce -1 msg -1
-SB v 1030 rid General-0-20150217-18:48:36-97119 b 1000
+SB v 1030 rid General-0-20150218-14:46:57-3601 b 1000
 KF p -1 c "" s ""
+MC id 1 c cModule t cs381.simulations.P2PFlatNet n P2PFlatNet cm 1
+MS id 1 d ""
+MC id 2 c IPv4NetworkConfigurator t inet.networklayer.autorouting.ipv4.IPv4NetworkConfigurator pid 1 n configurator
+MS id 2 d i=block/cogwheel_s
+MC id 3 c cModule t inet.nodes.inet.Router pid 1 n rte[0] cm 1
+MS id 3 d is=vs;i=abstract/router;bgb=,448
+MC id 4 c cModule t inet.nodes.inet.StandardHost pid 1 n server1 cm 1
+MS id 4 d i=device/pc2;bgb=,448
+MC id 5 c cModule t inet.nodes.inet.StandardHost pid 1 n client1 cm 1
+MS id 5 d i=device/pc2;bgb=,448
+GC m 4 g 2097152 n pppg$i i 0 o 0
+GC m 4 g 2621440 n pppg$o i 0 o 1
+GC m 3 g 2097152 n pppg$i i 0 o 0
+GC m 3 g 2621440 n pppg$o i 0 o 1
+CC sm 4 sg 2621440 dm 3 dg 2097152
+CS sm 4 sg 2621440 d ""
+CC sm 3 sg 2621440 dm 4 dg 2097152
+CS sm 3 sg 2621440 d ""
+GC m 5 g 2097152 n pppg$i i 0 o 0
+GC m 5 g 2621440 n pppg$o i 0 o 1
+GC m 3 g 2097153 n pppg$i i 1 o 0
+GC m 3 g 2621441 n pppg$o i 1 o 1
+CC sm 5 sg 2621440 dm 3 dg 2097153
+CS sm 5 sg 2621440 d ""
+CC sm 3 sg 2621441 dm 5 dg 2097152
+CS sm 3 sg 2621441 d ""
+MC id 6 c NotificationBoard t inet.base.NotificationBoard pid 3 n notificationBoard
+MS id 6 d is=s;p=53,155;i=block/control
+MC id 7 c cModule t inet.nodes.inet.NetworkLayer pid 3 n networkLayer cm 1
+GC m 7 g 12 n igmpIn o 0
+GC m 7 g 15 n igmpOut o 1
+MS id 7 d q=queue;p=329,287;i=block/fork
+MC id 8 c RoutingTable t inet.networklayer.ipv4.RoutingTable pid 3 n routingTable
+MS id 8 d is=s;p=53,225;i=block/table
+MC id 9 c InterfaceTable t inet.networklayer.common.InterfaceTable pid 3 n interfaceTable
+MS id 9 d is=s;p=53,287;i=block/table
+MC id 10 c cModule t inet.linklayer.loopback.LoopbackInterface pid 3 n lo0 cm 1
+GC m 10 g 0 n upperLayerIn o 0
+GC m 10 g 3 n upperLayerOut o 1
+MS id 10 d p=78,406;i=block/ifcard;bgb=214,249;bgl=53
+MC id 11 c cModule t inet.linklayer.ppp.PPPInterface pid 3 n ppp[0] cm 1
+GC m 11 g 0 n upperLayerIn o 0
+GC m 11 g 3 n upperLayerOut o 1
+GC m 11 g 4 n phys$i o 0
+GC m 11 g 5 n phys$o o 1
+MS id 11 d q=txQueue;p=558,406,row,60;i=block/ifcard;bgb=214,249;bgl=53
+MC id 12 c cModule t inet.linklayer.ppp.PPPInterface pid 3 n ppp[1] cm 1
+GC m 12 g 0 n upperLayerIn o 0
+GC m 12 g 3 n upperLayerOut o 1
+GC m 12 g 4 n phys$i o 0
+GC m 12 g 5 n phys$o o 1
+MS id 12 d q=txQueue;p=558,406,row,60;i=block/ifcard;bgb=214,249;bgl=53
+GC m 7 g 2621440 n ifOut i 0 o 1
+CC sm 7 sg 2621440 dm 10 dg 0
+GC m 7 g 1048576 n ifIn i 0 o 0
+CC sm 10 sg 3 dm 7 dg 1048576
+CC sm 3 sg 2097152 dm 11 dg 4
+CS sm 3 sg 2097152 d m=s
+CC sm 11 sg 5 dm 3 dg 2621440
+CS sm 11 sg 5 d m=s
+GC m 7 g 1048577 n ifIn i 1 o 0
+CC sm 11 sg 3 dm 7 dg 1048577
+GC m 7 g 2621441 n ifOut i 1 o 1
+CC sm 7 sg 2621441 dm 11 dg 0
+CC sm 3 sg 2097153 dm 12 dg 4
+CS sm 3 sg 2097153 d m=s
+CC sm 12 sg 5 dm 3 dg 2621441
+CS sm 12 sg 5 d m=s
+GC m 7 g 1048578 n ifIn i 2 o 0
+CC sm 12 sg 3 dm 7 dg 1048578
+GC m 7 g 2621442 n ifOut i 2 o 1
+CC sm 7 sg 2621442 dm 12 dg 0
+MC id 13 c IPv4NodeConfigurator t inet.networklayer.autorouting.ipv4.IPv4NodeConfigurator pid 7 n configurator
+MS id 13 d p=39,158;i=block/cogwheel_s
+MC id 14 c IPv4 t inet.networklayer.ipv4.IPv4 pid 7 n ip
+GC m 14 g 4 n arpIn o 0
+GC m 14 g 7 n arpOut o 1
+MS id 14 d q=queue;p=85,95;i=block/routing
+GC m 14 g 5242880 n queueIn i 0 o 0
+GC m 14 g 5242881 n queueIn i 1 o 0
+GC m 14 g 5242882 n queueIn i 2 o 0
+GC m 14 g 6815744 n queueOut i 0 o 1
+GC m 14 g 6815745 n queueOut i 1 o 1
+GC m 14 g 6815746 n queueOut i 2 o 1
+MC id 15 c ARP t inet.networklayer.arp.ARP pid 7 n arp
+GC m 15 g 0 n netwIn o 0
+GC m 15 g 3 n netwOut o 1
+MS id 15 d q=pendingQueue;p=202,142;i=block/layer
+MC id 16 c ICMP t inet.networklayer.ipv4.ICMP pid 7 n icmp
+GC m 16 g 0 n localIn o 0
+GC m 16 g 7 n sendOut o 1
+GC m 16 g 9 n errorOut o 1
+MS id 16 d p=160,63;i=block/control_s
+MC id 17 c IGMPv2 t inet.networklayer.ipv4.IGMPv2 pid 7 n igmp
+GC m 17 g 0 n ipIn o 0
+GC m 17 g 3 n ipOut o 1
+GC m 17 g 4 n routerIn o 0
+GC m 17 g 7 n routerOut o 1
+MS id 17 d p=39,33;i=block/cogwheel_s
+MC id 18 c ErrorHandling t inet.networklayer.ipv4.ErrorHandling pid 7 n errorHandling
+GC m 18 g 0 n in o 0
+MS id 18 d p=239,63;i=block/sink_s
+GC m 14 g 2621440 n transportOut i 0 o 1
+CC sm 14 sg 2621440 dm 16 dg 0
+GC m 14 g 1048576 n transportIn i 0 o 0
+CC sm 16 sg 7 dm 14 dg 1048576
+GC m 14 g 2621441 n transportOut i 1 o 1
+CC sm 14 sg 2621441 dm 17 dg 0
+GC m 14 g 1048577 n transportIn i 1 o 0
+CC sm 17 sg 3 dm 14 dg 1048577
+CC sm 16 sg 9 dm 18 dg 0
+CC sm 14 sg 7 dm 15 dg 0
+CC sm 15 sg 3 dm 14 dg 4
+CC sm 17 sg 7 dm 7 dg 15
+CC sm 7 sg 12 dm 17 dg 4
+CC sm 7 sg 1048576 dm 14 dg 5242880
+CS sm 7 sg 1048576 d m=s
+CC sm 7 sg 1048577 dm 14 dg 5242881
+CS sm 7 sg 1048577 d m=s
+CC sm 7 sg 1048578 dm 14 dg 5242882
+CS sm 7 sg 1048578 d m=s
+CC sm 14 sg 6815744 dm 7 dg 2621440
+CS sm 14 sg 6815744 d m=s
+CC sm 14 sg 6815745 dm 7 dg 2621441
+CS sm 14 sg 6815745 d m=s
+CC sm 14 sg 6815746 dm 7 dg 2621442
+CS sm 14 sg 6815746 d m=s
+MC id 19 c Loopback t inet.linklayer.loopback.Loopback pid 10 n lo
+GC m 19 g 0 n netwIn o 0
+GC m 19 g 3 n netwOut o 1
+MS id 19 d p=98,207;i=block/rxtx
+CC sm 10 sg 0 dm 19 dg 0
+CS sm 10 sg 0 d m=n
+CC sm 19 sg 3 dm 10 dg 3
+CS sm 19 sg 3 d m=n
+MC id 20 c DropTailQueue t inet.linklayer.queue.DropTailQueue pid 11 n queue
+GC m 20 g 0 n in o 0
+GC m 20 g 3 n out o 1
+MS id 20 d q=l2queue;p=42,161;i=block/queue
+MC id 21 c PPP t inet.linklayer.ppp.PPP pid 11 n ppp
+GC m 21 g 0 n netwIn o 0
+GC m 21 g 3 n netwOut o 1
+GC m 21 g 4 n phys$i o 0
+GC m 21 g 5 n phys$o o 1
+MS id 21 d p=98,207;i=block/rxtx
+CC sm 11 sg 0 dm 20 dg 0
+CS sm 11 sg 0 d m=n
+CC sm 20 sg 3 dm 21 dg 0
+CC sm 11 sg 4 dm 21 dg 4
+CS sm 11 sg 4 d m=s
+CC sm 21 sg 5 dm 11 dg 5
+CS sm 21 sg 5 d m=s
+CC sm 21 sg 3 dm 11 dg 3
+CS sm 21 sg 3 d m=n
+MC id 22 c DropTailQueue t inet.linklayer.queue.DropTailQueue pid 12 n queue
+GC m 22 g 0 n in o 0
+GC m 22 g 3 n out o 1
+MS id 22 d q=l2queue;p=42,161;i=block/queue
+MC id 23 c PPP t inet.linklayer.ppp.PPP pid 12 n ppp
+GC m 23 g 0 n netwIn o 0
+GC m 23 g 3 n netwOut o 1
+GC m 23 g 4 n phys$i o 0
+GC m 23 g 5 n phys$o o 1
+MS id 23 d p=98,207;i=block/rxtx
+CC sm 12 sg 0 dm 22 dg 0
+CS sm 12 sg 0 d m=n
+CC sm 22 sg 3 dm 23 dg 0
+CC sm 12 sg 4 dm 23 dg 4
+CS sm 12 sg 4 d m=s
+CC sm 23 sg 5 dm 12 dg 5
+CS sm 23 sg 5 d m=s
+CC sm 23 sg 3 dm 12 dg 3
+CS sm 23 sg 3 d m=n
+MC id 24 c NotificationBoard t inet.base.NotificationBoard pid 4 n notificationBoard
+MS id 24 d is=s;p=53,155;i=block/control
+MC id 25 c cModule t inet.nodes.inet.NetworkLayer pid 4 n networkLayer cm 1
+GC m 25 g 12 n igmpIn o 0
+GC m 25 g 15 n igmpOut o 1
+MS id 25 d q=queue;p=329,287;i=block/fork
+MC id 26 c RoutingTable t inet.networklayer.ipv4.RoutingTable pid 4 n routingTable
+MS id 26 d is=s;p=53,225;i=block/table
+MC id 27 c InterfaceTable t inet.networklayer.common.InterfaceTable pid 4 n interfaceTable
+MS id 27 d is=s;p=53,287;i=block/table
+MC id 28 c cModule t inet.linklayer.loopback.LoopbackInterface pid 4 n lo0 cm 1
+GC m 28 g 0 n upperLayerIn o 0
+GC m 28 g 3 n upperLayerOut o 1
+MS id 28 d p=78,406;i=block/ifcard;bgb=214,249;bgl=53
+MC id 29 c cModule t inet.linklayer.ppp.PPPInterface pid 4 n ppp[0] cm 1
+GC m 29 g 0 n upperLayerIn o 0
+GC m 29 g 3 n upperLayerOut o 1
+GC m 29 g 4 n phys$i o 0
+GC m 29 g 5 n phys$o o 1
+MS id 29 d q=txQueue;p=558,406,row,60;i=block/ifcard;bgb=214,249;bgl=53
+GC m 25 g 2621440 n ifOut i 0 o 1
+CC sm 25 sg 2621440 dm 28 dg 0
+GC m 25 g 1048576 n ifIn i 0 o 0
+CC sm 28 sg 3 dm 25 dg 1048576
+CC sm 4 sg 2097152 dm 29 dg 4
+CS sm 4 sg 2097152 d m=s
+CC sm 29 sg 5 dm 4 dg 2621440
+CS sm 29 sg 5 d m=s
+GC m 25 g 1048577 n ifIn i 1 o 0
+CC sm 29 sg 3 dm 25 dg 1048577
+GC m 25 g 2621441 n ifOut i 1 o 1
+CC sm 25 sg 2621441 dm 29 dg 0
+MC id 30 c IPv4NodeConfigurator t inet.networklayer.autorouting.ipv4.IPv4NodeConfigurator pid 25 n configurator
+MS id 30 d p=39,158;i=block/cogwheel_s
+MC id 31 c IPv4 t inet.networklayer.ipv4.IPv4 pid 25 n ip
+GC m 31 g 4 n arpIn o 0
+GC m 31 g 7 n arpOut o 1
+MS id 31 d q=queue;p=85,95;i=block/routing
+GC m 31 g 5242880 n queueIn i 0 o 0
+GC m 31 g 5242881 n queueIn i 1 o 0
+GC m 31 g 6815744 n queueOut i 0 o 1
+GC m 31 g 6815745 n queueOut i 1 o 1
+MC id 32 c ARP t inet.networklayer.arp.ARP pid 25 n arp
+GC m 32 g 0 n netwIn o 0
+GC m 32 g 3 n netwOut o 1
+MS id 32 d q=pendingQueue;p=202,142;i=block/layer
+MC id 33 c ICMP t inet.networklayer.ipv4.ICMP pid 25 n icmp
+GC m 33 g 0 n localIn o 0
+GC m 33 g 7 n sendOut o 1
+GC m 33 g 9 n errorOut o 1
+MS id 33 d p=160,63;i=block/control_s
+MC id 34 c IGMPv2 t inet.networklayer.ipv4.IGMPv2 pid 25 n igmp
+GC m 34 g 0 n ipIn o 0
+GC m 34 g 3 n ipOut o 1
+GC m 34 g 4 n routerIn o 0
+GC m 34 g 7 n routerOut o 1
+MS id 34 d p=39,33;i=block/cogwheel_s
+MC id 35 c ErrorHandling t inet.networklayer.ipv4.ErrorHandling pid 25 n errorHandling
+GC m 35 g 0 n in o 0
+MS id 35 d p=239,63;i=block/sink_s
+GC m 31 g 2621440 n transportOut i 0 o 1
+CC sm 31 sg 2621440 dm 33 dg 0
+GC m 31 g 1048576 n transportIn i 0 o 0
+CC sm 33 sg 7 dm 31 dg 1048576
+GC m 31 g 2621441 n transportOut i 1 o 1
+CC sm 31 sg 2621441 dm 34 dg 0
+GC m 31 g 1048577 n transportIn i 1 o 0
+CC sm 34 sg 3 dm 31 dg 1048577
+CC sm 33 sg 9 dm 35 dg 0
+CC sm 31 sg 7 dm 32 dg 0
+CC sm 32 sg 3 dm 31 dg 4
+CC sm 34 sg 7 dm 25 dg 15
+CC sm 25 sg 12 dm 34 dg 4
+CC sm 25 sg 1048576 dm 31 dg 5242880
+CS sm 25 sg 1048576 d m=s
+CC sm 25 sg 1048577 dm 31 dg 5242881
+CS sm 25 sg 1048577 d m=s
+CC sm 31 sg 6815744 dm 25 dg 2621440
+CS sm 31 sg 6815744 d m=s
+CC sm 31 sg 6815745 dm 25 dg 2621441
+CS sm 31 sg 6815745 d m=s
+MC id 36 c Loopback t inet.linklayer.loopback.Loopback pid 28 n lo
+GC m 36 g 0 n netwIn o 0
+GC m 36 g 3 n netwOut o 1
+MS id 36 d p=98,207;i=block/rxtx
+CC sm 28 sg 0 dm 36 dg 0
+CS sm 28 sg 0 d m=n
+CC sm 36 sg 3 dm 28 dg 3
+CS sm 36 sg 3 d m=n
+MC id 37 c DropTailQueue t inet.linklayer.queue.DropTailQueue pid 29 n queue
+GC m 37 g 0 n in o 0
+GC m 37 g 3 n out o 1
+MS id 37 d q=l2queue;p=42,161;i=block/queue
+MC id 38 c PPP t inet.linklayer.ppp.PPP pid 29 n ppp
+GC m 38 g 0 n netwIn o 0
+GC m 38 g 3 n netwOut o 1
+GC m 38 g 4 n phys$i o 0
+GC m 38 g 5 n phys$o o 1
+MS id 38 d p=98,207;i=block/rxtx
+CC sm 29 sg 0 dm 37 dg 0
+CS sm 29 sg 0 d m=n
+CC sm 37 sg 3 dm 38 dg 0
+CC sm 29 sg 4 dm 38 dg 4
+CS sm 29 sg 4 d m=s
+CC sm 38 sg 5 dm 29 dg 5
+CS sm 38 sg 5 d m=s
+CC sm 38 sg 3 dm 29 dg 3
+CS sm 38 sg 3 d m=n
+MC id 39 c NotificationBoard t inet.base.NotificationBoard pid 5 n notificationBoard
+MS id 39 d is=s;p=53,155;i=block/control
+MC id 40 c cModule t inet.nodes.inet.NetworkLayer pid 5 n networkLayer cm 1
+GC m 40 g 12 n igmpIn o 0
+GC m 40 g 15 n igmpOut o 1
+MS id 40 d q=queue;p=329,287;i=block/fork
+MC id 41 c RoutingTable t inet.networklayer.ipv4.RoutingTable pid 5 n routingTable
+MS id 41 d is=s;p=53,225;i=block/table
+MC id 42 c InterfaceTable t inet.networklayer.common.InterfaceTable pid 5 n interfaceTable
+MS id 42 d is=s;p=53,287;i=block/table
+MC id 43 c cModule t inet.linklayer.loopback.LoopbackInterface pid 5 n lo0 cm 1
+GC m 43 g 0 n upperLayerIn o 0
+GC m 43 g 3 n upperLayerOut o 1
+MS id 43 d p=78,406;i=block/ifcard;bgb=214,249;bgl=53
+MC id 44 c cModule t inet.linklayer.ppp.PPPInterface pid 5 n ppp[0] cm 1
+GC m 44 g 0 n upperLayerIn o 0
+GC m 44 g 3 n upperLayerOut o 1
+GC m 44 g 4 n phys$i o 0
+GC m 44 g 5 n phys$o o 1
+MS id 44 d q=txQueue;p=558,406,row,60;i=block/ifcard;bgb=214,249;bgl=53
+GC m 40 g 2621440 n ifOut i 0 o 1
+CC sm 40 sg 2621440 dm 43 dg 0
+GC m 40 g 1048576 n ifIn i 0 o 0
+CC sm 43 sg 3 dm 40 dg 1048576
+CC sm 5 sg 2097152 dm 44 dg 4
+CS sm 5 sg 2097152 d m=s
+CC sm 44 sg 5 dm 5 dg 2621440
+CS sm 44 sg 5 d m=s
+GC m 40 g 1048577 n ifIn i 1 o 0
+CC sm 44 sg 3 dm 40 dg 1048577
+GC m 40 g 2621441 n ifOut i 1 o 1
+CC sm 40 sg 2621441 dm 44 dg 0
+MC id 45 c IPv4NodeConfigurator t inet.networklayer.autorouting.ipv4.IPv4NodeConfigurator pid 40 n configurator
+MS id 45 d p=39,158;i=block/cogwheel_s
+MC id 46 c IPv4 t inet.networklayer.ipv4.IPv4 pid 40 n ip
+GC m 46 g 4 n arpIn o 0
+GC m 46 g 7 n arpOut o 1
+MS id 46 d q=queue;p=85,95;i=block/routing
+GC m 46 g 5242880 n queueIn i 0 o 0
+GC m 46 g 5242881 n queueIn i 1 o 0
+GC m 46 g 6815744 n queueOut i 0 o 1
+GC m 46 g 6815745 n queueOut i 1 o 1
+MC id 47 c ARP t inet.networklayer.arp.ARP pid 40 n arp
+GC m 47 g 0 n netwIn o 0
+GC m 47 g 3 n netwOut o 1
+MS id 47 d q=pendingQueue;p=202,142;i=block/layer
+MC id 48 c ICMP t inet.networklayer.ipv4.ICMP pid 40 n icmp
+GC m 48 g 0 n localIn o 0
+GC m 48 g 7 n sendOut o 1
+GC m 48 g 9 n errorOut o 1
+MS id 48 d p=160,63;i=block/control_s
+MC id 49 c IGMPv2 t inet.networklayer.ipv4.IGMPv2 pid 40 n igmp
+GC m 49 g 0 n ipIn o 0
+GC m 49 g 3 n ipOut o 1
+GC m 49 g 4 n routerIn o 0
+GC m 49 g 7 n routerOut o 1
+MS id 49 d p=39,33;i=block/cogwheel_s
+MC id 50 c ErrorHandling t inet.networklayer.ipv4.ErrorHandling pid 40 n errorHandling
+GC m 50 g 0 n in o 0
+MS id 50 d p=239,63;i=block/sink_s
+GC m 46 g 2621440 n transportOut i 0 o 1
+CC sm 46 sg 2621440 dm 48 dg 0
+GC m 46 g 1048576 n transportIn i 0 o 0
+CC sm 48 sg 7 dm 46 dg 1048576
+GC m 46 g 2621441 n transportOut i 1 o 1
+CC sm 46 sg 2621441 dm 49 dg 0
+GC m 46 g 1048577 n transportIn i 1 o 0
+CC sm 49 sg 3 dm 46 dg 1048577
+CC sm 48 sg 9 dm 50 dg 0
+CC sm 46 sg 7 dm 47 dg 0
+CC sm 47 sg 3 dm 46 dg 4
+CC sm 49 sg 7 dm 40 dg 15
+CC sm 40 sg 12 dm 49 dg 4
+CC sm 40 sg 1048576 dm 46 dg 5242880
+CS sm 40 sg 1048576 d m=s
+CC sm 40 sg 1048577 dm 46 dg 5242881
+CS sm 40 sg 1048577 d m=s
+CC sm 46 sg 6815744 dm 40 dg 2621440
+CS sm 46 sg 6815744 d m=s
+CC sm 46 sg 6815745 dm 40 dg 2621441
+CS sm 46 sg 6815745 d m=s
+MC id 51 c Loopback t inet.linklayer.loopback.Loopback pid 43 n lo
+GC m 51 g 0 n netwIn o 0
+GC m 51 g 3 n netwOut o 1
+MS id 51 d p=98,207;i=block/rxtx
+CC sm 43 sg 0 dm 51 dg 0
+CS sm 43 sg 0 d m=n
+CC sm 51 sg 3 dm 43 dg 3
+CS sm 51 sg 3 d m=n
+MC id 52 c DropTailQueue t inet.linklayer.queue.DropTailQueue pid 44 n queue
+GC m 52 g 0 n in o 0
+GC m 52 g 3 n out o 1
+MS id 52 d q=l2queue;p=42,161;i=block/queue
+MC id 53 c PPP t inet.linklayer.ppp.PPP pid 44 n ppp
+GC m 53 g 0 n netwIn o 0
+GC m 53 g 3 n netwOut o 1
+GC m 53 g 4 n phys$i o 0
+GC m 53 g 5 n phys$o o 1
+MS id 53 d p=98,207;i=block/rxtx
+CC sm 44 sg 0 dm 52 dg 0
+CS sm 44 sg 0 d m=n
+CC sm 52 sg 3 dm 53 dg 0
+CC sm 44 sg 4 dm 53 dg 4
+CS sm 44 sg 4 d m=s
+CC sm 53 sg 5 dm 44 dg 5
+CS sm 53 sg 5 d m=s
+CC sm 53 sg 3 dm 44 dg 3
+CS sm 53 sg 3 d m=n
+MB sm 1 tm 2 m initialize(0)
+ME
+MB sm 1 tm 3 m initialize(0)
+ME
+MB sm 1 tm 6 m initialize(0)
+ME
+MB sm 1 tm 7 m initialize(0)
+ME
+MB sm 1 tm 13 m initialize(0)
+ME
+MB sm 1 tm 14 m initialize(0)
+CM id 0 tid 0 eid 0 etid 0 c cMessage n end-service pe -1
+ME
+MB sm 1 tm 15 m initialize(0)
+ME
+MB sm 1 tm 16 m initialize(0)
+CM id 1 tid 1 eid 1 etid 1 c cMessage n RegisterProtocol k 1199 pe -1
+BS id 1 tid 1 eid 1 etid 1 c cMessage n RegisterProtocol k 1199 pe 0
+CL id 1 tid 1 eid 1 etid 1 c cMessage n RegisterProtocol k 1199 pe 0 cid 2
+SH sm 16 sg 7
+ES t 0
+ME
+MB sm 1 tm 17 m initialize(0)
+MB sm 17 tm 6 m subscribe(IF-DELETED)
+ME
+MB sm 17 tm 6 m subscribe(36)
+ME
+MB sm 17 tm 6 m subscribe(37)
+ME
+ME
+MB sm 1 tm 18 m initialize(0)
+ME
+MB sm 1 tm 8 m initialize(0)
+MB sm 8 tm 6 m subscribe(IF-CREATED)
+ME
+MB sm 8 tm 6 m subscribe(IF-DELETED)
+ME
+MB sm 8 tm 6 m subscribe(IF-STATE)
+ME
+MB sm 8 tm 6 m subscribe(IF-CFG)
+ME
+MB sm 8 tm 6 m subscribe(IPv4-CFG)
+ME
+ME
+MB sm 1 tm 9 m initialize(0)
+ME
+MB sm 1 tm 10 m initialize(0)
+ME
+MB sm 1 tm 19 m initialize(0)
+MB sm 19 tm 9 m ""
+ME
+MB sm 19 tm 9 m ""
+MB sm 9 tm 6 m "fireChangeNotification(IF-CFG, lo0  on:nwLayer.ifOut[0]  MTU:4470 LOOPBACK  macAddr:n/a)"
+ME
+ME
+MB sm 19 tm 6 m "fireChangeNotification(IF-CREATED, lo0  on:nwLayer.ifOut[0]  MTU:4470 LOOPBACK  macAddr:n/a)"
+ME
+ME
+MB sm 1 tm 11 m initialize(0)
+ME
+MB sm 1 tm 20 m initialize(0)
+ME
+MB sm 1 tm 21 m initialize(0)
+CM id 3 tid 3 eid 3 etid 3 c cMessage n pppEndTxEvent pe -1
+MB sm 21 tm 9 m ""
+ME
+MB sm 21 tm 9 m ""
+MB sm 9 tm 6 m "fireChangeNotification(IF-CFG, ppp0  on:-  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a)"
+ME
+ME
+MB sm 21 tm 9 m ""
+MB sm 9 tm 6 m "fireChangeNotification(IF-CFG, ppp0  on:-  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a)"
+ME
+ME
+MB sm 21 tm 9 m ""
+MB sm 9 tm 6 m "fireChangeNotification(IF-CFG, ppp0  on:nwLayer.ifOut[1]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a)"
+ME
+ME
+MB sm 21 tm 6 m "fireChangeNotification(IF-CREATED, ppp0  on:nwLayer.ifOut[1]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a)"
+ME
+- Requesting first frame from queue module
+MB sm 21 tm 20 m requestPacket()
+ME
+ME
+MB sm 1 tm 12 m initialize(0)
+ME
+MB sm 1 tm 22 m initialize(0)
+ME
+MB sm 1 tm 23 m initialize(0)
+CM id 4 tid 4 eid 4 etid 4 c cMessage n pppEndTxEvent pe -1
+MB sm 23 tm 9 m ""
+ME
+MB sm 23 tm 9 m ""
+MB sm 9 tm 6 m "fireChangeNotification(IF-CFG, ppp1  on:-  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a)"
+ME
+ME
+MB sm 23 tm 9 m ""
+MB sm 9 tm 6 m "fireChangeNotification(IF-CFG, ppp1  on:-  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a)"
+ME
+ME
+MB sm 23 tm 9 m ""
+MB sm 9 tm 6 m "fireChangeNotification(IF-CFG, ppp1  on:nwLayer.ifOut[2]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a)"
+ME
+ME
+MB sm 23 tm 6 m "fireChangeNotification(IF-CREATED, ppp1  on:nwLayer.ifOut[2]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a)"
+ME
+- Requesting first frame from queue module
+MB sm 23 tm 22 m requestPacket()
+ME
+ME
+MB sm 1 tm 4 m initialize(0)
+ME
+MB sm 1 tm 24 m initialize(0)
+ME
+MB sm 1 tm 25 m initialize(0)
+ME
+MB sm 1 tm 30 m initialize(0)
+ME
+MB sm 1 tm 31 m initialize(0)
+CM id 5 tid 5 eid 5 etid 5 c cMessage n end-service pe -1
+ME
+MB sm 1 tm 32 m initialize(0)
+ME
+MB sm 1 tm 33 m initialize(0)
+CM id 6 tid 6 eid 6 etid 6 c cMessage n RegisterProtocol k 1199 pe -1
+BS id 6 tid 6 eid 6 etid 6 c cMessage n RegisterProtocol k 1199 pe 0
+CL id 6 tid 6 eid 6 etid 6 c cMessage n RegisterProtocol k 1199 pe 0 cid 7
+SH sm 33 sg 7
+ES t 0
+ME
+MB sm 1 tm 34 m initialize(0)
+MB sm 34 tm 24 m subscribe(IF-DELETED)
+ME
+MB sm 34 tm 24 m subscribe(36)
+ME
+MB sm 34 tm 24 m subscribe(37)
+ME
+ME
+MB sm 1 tm 35 m initialize(0)
+ME
+MB sm 1 tm 26 m initialize(0)
+MB sm 26 tm 24 m subscribe(IF-CREATED)
+ME
+MB sm 26 tm 24 m subscribe(IF-DELETED)
+ME
+MB sm 26 tm 24 m subscribe(IF-STATE)
+ME
+MB sm 26 tm 24 m subscribe(IF-CFG)
+ME
+MB sm 26 tm 24 m subscribe(IPv4-CFG)
+ME
+ME
+MB sm 1 tm 27 m initialize(0)
+ME
+MB sm 1 tm 28 m initialize(0)
+ME
+MB sm 1 tm 36 m initialize(0)
+MB sm 36 tm 27 m ""
+ME
+MB sm 36 tm 27 m ""
+MB sm 27 tm 24 m "fireChangeNotification(IF-CFG, lo0  on:nwLayer.ifOut[0]  MTU:4470 LOOPBACK  macAddr:n/a)"
+ME
+ME
+MB sm 36 tm 24 m "fireChangeNotification(IF-CREATED, lo0  on:nwLayer.ifOut[0]  MTU:4470 LOOPBACK  macAddr:n/a)"
+ME
+ME
+MB sm 1 tm 29 m initialize(0)
+ME
+MB sm 1 tm 37 m initialize(0)
+ME
+MB sm 1 tm 38 m initialize(0)
+CM id 8 tid 8 eid 8 etid 8 c cMessage n pppEndTxEvent pe -1
+MB sm 38 tm 27 m ""
+ME
+MB sm 38 tm 27 m ""
+MB sm 27 tm 24 m "fireChangeNotification(IF-CFG, ppp0  on:-  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a)"
+ME
+ME
+MB sm 38 tm 27 m ""
+MB sm 27 tm 24 m "fireChangeNotification(IF-CFG, ppp0  on:-  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a)"
+ME
+ME
+MB sm 38 tm 27 m ""
+MB sm 27 tm 24 m "fireChangeNotification(IF-CFG, ppp0  on:nwLayer.ifOut[1]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a)"
+ME
+ME
+MB sm 38 tm 24 m "fireChangeNotification(IF-CREATED, ppp0  on:nwLayer.ifOut[1]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a)"
+ME
+- Requesting first frame from queue module
+MB sm 38 tm 37 m requestPacket()
+ME
+ME
+MB sm 1 tm 5 m initialize(0)
+ME
+MB sm 1 tm 39 m initialize(0)
+ME
+MB sm 1 tm 40 m initialize(0)
+ME
+MB sm 1 tm 45 m initialize(0)
+ME
+MB sm 1 tm 46 m initialize(0)
+CM id 9 tid 9 eid 9 etid 9 c cMessage n end-service pe -1
+ME
+MB sm 1 tm 47 m initialize(0)
+ME
+MB sm 1 tm 48 m initialize(0)
+CM id 10 tid 10 eid 10 etid 10 c cMessage n RegisterProtocol k 1199 pe -1
+BS id 10 tid 10 eid 10 etid 10 c cMessage n RegisterProtocol k 1199 pe 0
+CL id 10 tid 10 eid 10 etid 10 c cMessage n RegisterProtocol k 1199 pe 0 cid 11
+SH sm 48 sg 7
+ES t 0
+ME
+MB sm 1 tm 49 m initialize(0)
+MB sm 49 tm 39 m subscribe(IF-DELETED)
+ME
+MB sm 49 tm 39 m subscribe(36)
+ME
+MB sm 49 tm 39 m subscribe(37)
+ME
+ME
+MB sm 1 tm 50 m initialize(0)
+ME
+MB sm 1 tm 41 m initialize(0)
+MB sm 41 tm 39 m subscribe(IF-CREATED)
+ME
+MB sm 41 tm 39 m subscribe(IF-DELETED)
+ME
+MB sm 41 tm 39 m subscribe(IF-STATE)
+ME
+MB sm 41 tm 39 m subscribe(IF-CFG)
+ME
+MB sm 41 tm 39 m subscribe(IPv4-CFG)
+ME
+ME
+MB sm 1 tm 42 m initialize(0)
+ME
+MB sm 1 tm 43 m initialize(0)
+ME
+MB sm 1 tm 51 m initialize(0)
+MB sm 51 tm 42 m ""
+ME
+MB sm 51 tm 42 m ""
+MB sm 42 tm 39 m "fireChangeNotification(IF-CFG, lo0  on:nwLayer.ifOut[0]  MTU:4470 LOOPBACK  macAddr:n/a)"
+ME
+ME
+MB sm 51 tm 39 m "fireChangeNotification(IF-CREATED, lo0  on:nwLayer.ifOut[0]  MTU:4470 LOOPBACK  macAddr:n/a)"
+ME
+ME
+MB sm 1 tm 44 m initialize(0)
+ME
+MB sm 1 tm 52 m initialize(0)
+ME
+MB sm 1 tm 53 m initialize(0)
+CM id 12 tid 12 eid 12 etid 12 c cMessage n pppEndTxEvent pe -1
+MB sm 53 tm 42 m ""
+ME
+MB sm 53 tm 42 m ""
+MB sm 42 tm 39 m "fireChangeNotification(IF-CFG, ppp0  on:-  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a)"
+ME
+ME
+MB sm 53 tm 42 m ""
+MB sm 42 tm 39 m "fireChangeNotification(IF-CFG, ppp0  on:-  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a)"
+ME
+ME
+MB sm 53 tm 42 m ""
+MB sm 42 tm 39 m "fireChangeNotification(IF-CFG, ppp0  on:nwLayer.ifOut[1]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a)"
+ME
+ME
+MB sm 53 tm 39 m "fireChangeNotification(IF-CREATED, ppp0  on:nwLayer.ifOut[1]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a)"
+ME
+- Requesting first frame from queue module
+MB sm 53 tm 52 m requestPacket()
+ME
+ME
+MB sm 1 tm 2 m initialize(1)
+ME
+MB sm 1 tm 13 m initialize(1)
+MB sm 13 tm 9 m ""
+MB sm 9 tm 6 m "fireChangeNotification(IF-CFG, lo0  on:nwLayer.ifOut[0]  MTU:4470 LOOPBACK  macAddr:n/a IPv4:{inet_addr:<unspec>/32})"
+ME
+ME
+MB sm 13 tm 9 m ""
+MB sm 9 tm 6 m "fireChangeNotification(IPv4-CFG, lo0  on:nwLayer.ifOut[0]  MTU:4470 LOOPBACK  macAddr:n/a IPv4:{inet_addr:127.0.0.1/32})"
+ME
+ME
+MB sm 13 tm 9 m ""
+MB sm 9 tm 6 m "fireChangeNotification(IPv4-CFG, lo0  on:nwLayer.ifOut[0]  MTU:4470 LOOPBACK  macAddr:n/a IPv4:{inet_addr:127.0.0.1/8})"
+ME
+ME
+MB sm 13 tm 9 m ""
+MB sm 9 tm 6 m "fireChangeNotification(IPv4-CFG, lo0  on:nwLayer.ifOut[0]  MTU:4470 LOOPBACK  macAddr:n/a IPv4:{inet_addr:127.0.0.1/8})"
+ME
+ME
+MB sm 13 tm 9 m ""
+MB sm 9 tm 6 m "fireChangeNotification(IF-CFG, ppp0  on:nwLayer.ifOut[1]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a IPv4:{inet_addr:<unspec>/32})"
+ME
+CS sm 3 sg 2621440 d "t=ppp0\n<unspec>/32"
+CS sm 3 sg 2621440 d "t=ppp0\n<unspec>/32,l"
+ME
+MB sm 13 tm 9 m ""
+MB sm 9 tm 6 m "fireChangeNotification(IPv4-CFG, ppp0  on:nwLayer.ifOut[1]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a IPv4:{inet_addr:<unspec>/32})"
+ME
+CS sm 3 sg 2621440 d "t=ppp0\n<unspec>/32,l"
+CS sm 3 sg 2621440 d "t=ppp0\n<unspec>/32,l"
+ME
+MB sm 13 tm 9 m ""
+MB sm 9 tm 6 m "fireChangeNotification(IPv4-CFG, ppp0  on:nwLayer.ifOut[1]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a IPv4:{inet_addr:<unspec>/32 mcastgrps:224.0.0.1})"
+ME
+CS sm 3 sg 2621440 d "t=ppp0\n<unspec>/32,l"
+CS sm 3 sg 2621440 d "t=ppp0\n<unspec>/32,l"
+ME
+MB sm 13 tm 6 m "fireChangeNotification(36, )"
+MB sm 6 tm 17 m ""
+ME
+ME
+MB sm 13 tm 9 m ""
+MB sm 9 tm 6 m "fireChangeNotification(IPv4-CFG, ppp0  on:nwLayer.ifOut[1]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a IPv4:{inet_addr:<unspec>/32 mcastgrps:224.0.0.1,224.0.0.2})"
+ME
+CS sm 3 sg 2621440 d "t=ppp0\n<unspec>/32,l"
+CS sm 3 sg 2621440 d "t=ppp0\n<unspec>/32,l"
+ME
+MB sm 13 tm 6 m "fireChangeNotification(36, )"
+MB sm 6 tm 17 m ""
+ME
+ME
+MB sm 13 tm 9 m ""
+MB sm 9 tm 6 m "fireChangeNotification(IF-CFG, ppp1  on:nwLayer.ifOut[2]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a IPv4:{inet_addr:<unspec>/32})"
+ME
+CS sm 3 sg 2621441 d "t=ppp1\n<unspec>/32"
+CS sm 3 sg 2621441 d "t=ppp1\n<unspec>/32,l"
+ME
+MB sm 13 tm 9 m ""
+MB sm 9 tm 6 m "fireChangeNotification(IPv4-CFG, ppp1  on:nwLayer.ifOut[2]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a IPv4:{inet_addr:<unspec>/32})"
+ME
+CS sm 3 sg 2621441 d "t=ppp1\n<unspec>/32,l"
+CS sm 3 sg 2621441 d "t=ppp1\n<unspec>/32,l"
+ME
+MB sm 13 tm 9 m ""
+MB sm 9 tm 6 m "fireChangeNotification(IPv4-CFG, ppp1  on:nwLayer.ifOut[2]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a IPv4:{inet_addr:<unspec>/32 mcastgrps:224.0.0.1})"
+ME
+CS sm 3 sg 2621441 d "t=ppp1\n<unspec>/32,l"
+CS sm 3 sg 2621441 d "t=ppp1\n<unspec>/32,l"
+ME
+MB sm 13 tm 6 m "fireChangeNotification(36, )"
+MB sm 6 tm 17 m ""
+ME
+ME
+MB sm 13 tm 9 m ""
+MB sm 9 tm 6 m "fireChangeNotification(IPv4-CFG, ppp1  on:nwLayer.ifOut[2]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a IPv4:{inet_addr:<unspec>/32 mcastgrps:224.0.0.1,224.0.0.2})"
+ME
+CS sm 3 sg 2621441 d "t=ppp1\n<unspec>/32,l"
+CS sm 3 sg 2621441 d "t=ppp1\n<unspec>/32,l"
+ME
+MB sm 13 tm 6 m "fireChangeNotification(36, )"
+MB sm 6 tm 17 m ""
+ME
+ME
+ME
+MB sm 1 tm 14 m initialize(1)
+ME
+MB sm 1 tm 15 m initialize(1)
+ME
+MB sm 1 tm 17 m initialize(1)
+MB sm 17 tm 6 m subscribe(IF-CREATED)
+ME
+CM id 13 tid 13 eid 13 etid 13 c cMessage n RegisterProtocol k 1199 pe -1
+BS id 13 tid 13 eid 13 etid 13 c cMessage n RegisterProtocol k 1199 pe 0
+CL id 13 tid 13 eid 13 etid 13 c cMessage n RegisterProtocol k 1199 pe 0 cid 14
+SH sm 17 sg 3
+ES t 0
+ME
+MB sm 1 tm 8 m initialize(1)
+ME
+MB sm 1 tm 9 m initialize(1)
+MS id 9 d "t=3 interfaces;is=s;p=53,287;i=block/table"
+ME
+MB sm 1 tm 19 m initialize(1)
+MB sm 19 tm 6 m subscribe(IF-DELETED)
+ME
+ME
+MB sm 1 tm 21 m initialize(1)
+MB sm 21 tm 6 m subscribe(IF-DELETED)
+ME
+ME
+MB sm 1 tm 23 m initialize(1)
+MB sm 23 tm 6 m subscribe(IF-DELETED)
+ME
+ME
+MB sm 1 tm 30 m initialize(1)
+MB sm 30 tm 27 m ""
+MB sm 27 tm 24 m "fireChangeNotification(IF-CFG, lo0  on:nwLayer.ifOut[0]  MTU:4470 LOOPBACK  macAddr:n/a IPv4:{inet_addr:<unspec>/32})"
+ME
+ME
+MB sm 30 tm 27 m ""
+MB sm 27 tm 24 m "fireChangeNotification(IPv4-CFG, lo0  on:nwLayer.ifOut[0]  MTU:4470 LOOPBACK  macAddr:n/a IPv4:{inet_addr:127.0.0.1/32})"
+ME
+ME
+MB sm 30 tm 27 m ""
+MB sm 27 tm 24 m "fireChangeNotification(IPv4-CFG, lo0  on:nwLayer.ifOut[0]  MTU:4470 LOOPBACK  macAddr:n/a IPv4:{inet_addr:127.0.0.1/8})"
+ME
+ME
+MB sm 30 tm 27 m ""
+MB sm 27 tm 24 m "fireChangeNotification(IPv4-CFG, lo0  on:nwLayer.ifOut[0]  MTU:4470 LOOPBACK  macAddr:n/a IPv4:{inet_addr:127.0.0.1/8})"
+ME
+ME
+MB sm 30 tm 27 m ""
+MB sm 27 tm 24 m "fireChangeNotification(IF-CFG, ppp0  on:nwLayer.ifOut[1]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a IPv4:{inet_addr:<unspec>/32})"
+ME
+CS sm 4 sg 2621440 d "t=ppp0\n<unspec>/32"
+CS sm 4 sg 2621440 d "t=ppp0\n<unspec>/32,l"
+ME
+MB sm 30 tm 27 m ""
+MB sm 27 tm 24 m "fireChangeNotification(IPv4-CFG, ppp0  on:nwLayer.ifOut[1]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a IPv4:{inet_addr:<unspec>/32})"
+ME
+CS sm 4 sg 2621440 d "t=ppp0\n<unspec>/32,l"
+CS sm 4 sg 2621440 d "t=ppp0\n<unspec>/32,l"
+ME
+MB sm 30 tm 27 m ""
+MB sm 27 tm 24 m "fireChangeNotification(IPv4-CFG, ppp0  on:nwLayer.ifOut[1]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a IPv4:{inet_addr:<unspec>/32 mcastgrps:224.0.0.1})"
+ME
+CS sm 4 sg 2621440 d "t=ppp0\n<unspec>/32,l"
+CS sm 4 sg 2621440 d "t=ppp0\n<unspec>/32,l"
+ME
+MB sm 30 tm 24 m "fireChangeNotification(36, )"
+MB sm 24 tm 34 m ""
+ME
+ME
+ME
+MB sm 1 tm 31 m initialize(1)
+ME
+MB sm 1 tm 32 m initialize(1)
+ME
+MB sm 1 tm 34 m initialize(1)
+MB sm 34 tm 24 m subscribe(IF-CREATED)
+ME
+CM id 15 tid 15 eid 15 etid 15 c cMessage n RegisterProtocol k 1199 pe -1
+BS id 15 tid 15 eid 15 etid 15 c cMessage n RegisterProtocol k 1199 pe 0
+CL id 15 tid 15 eid 15 etid 15 c cMessage n RegisterProtocol k 1199 pe 0 cid 16
+SH sm 34 sg 3
+ES t 0
+ME
+MB sm 1 tm 26 m initialize(1)
+ME
+MB sm 1 tm 27 m initialize(1)
+MS id 27 d "t=2 interfaces;is=s;p=53,287;i=block/table"
+ME
+MB sm 1 tm 36 m initialize(1)
+MB sm 36 tm 24 m subscribe(IF-DELETED)
+ME
+ME
+MB sm 1 tm 38 m initialize(1)
+MB sm 38 tm 24 m subscribe(IF-DELETED)
+ME
+ME
+MB sm 1 tm 45 m initialize(1)
+MB sm 45 tm 42 m ""
+MB sm 42 tm 39 m "fireChangeNotification(IF-CFG, lo0  on:nwLayer.ifOut[0]  MTU:4470 LOOPBACK  macAddr:n/a IPv4:{inet_addr:<unspec>/32})"
+ME
+ME
+MB sm 45 tm 42 m ""
+MB sm 42 tm 39 m "fireChangeNotification(IPv4-CFG, lo0  on:nwLayer.ifOut[0]  MTU:4470 LOOPBACK  macAddr:n/a IPv4:{inet_addr:127.0.0.1/32})"
+ME
+ME
+MB sm 45 tm 42 m ""
+MB sm 42 tm 39 m "fireChangeNotification(IPv4-CFG, lo0  on:nwLayer.ifOut[0]  MTU:4470 LOOPBACK  macAddr:n/a IPv4:{inet_addr:127.0.0.1/8})"
+ME
+ME
+MB sm 45 tm 42 m ""
+MB sm 42 tm 39 m "fireChangeNotification(IPv4-CFG, lo0  on:nwLayer.ifOut[0]  MTU:4470 LOOPBACK  macAddr:n/a IPv4:{inet_addr:127.0.0.1/8})"
+ME
+ME
+MB sm 45 tm 42 m ""
+MB sm 42 tm 39 m "fireChangeNotification(IF-CFG, ppp0  on:nwLayer.ifOut[1]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a IPv4:{inet_addr:<unspec>/32})"
+ME
+CS sm 5 sg 2621440 d "t=ppp0\n<unspec>/32"
+CS sm 5 sg 2621440 d "t=ppp0\n<unspec>/32,l"
+ME
+MB sm 45 tm 42 m ""
+MB sm 42 tm 39 m "fireChangeNotification(IPv4-CFG, ppp0  on:nwLayer.ifOut[1]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a IPv4:{inet_addr:<unspec>/32})"
+ME
+CS sm 5 sg 2621440 d "t=ppp0\n<unspec>/32,l"
+CS sm 5 sg 2621440 d "t=ppp0\n<unspec>/32,l"
+ME
+MB sm 45 tm 42 m ""
+MB sm 42 tm 39 m "fireChangeNotification(IPv4-CFG, ppp0  on:nwLayer.ifOut[1]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a IPv4:{inet_addr:<unspec>/32 mcastgrps:224.0.0.1})"
+ME
+CS sm 5 sg 2621440 d "t=ppp0\n<unspec>/32,l"
+CS sm 5 sg 2621440 d "t=ppp0\n<unspec>/32,l"
+ME
+MB sm 45 tm 39 m "fireChangeNotification(36, )"
+MB sm 39 tm 49 m ""
+ME
+ME
+ME
+MB sm 1 tm 46 m initialize(1)
+ME
+MB sm 1 tm 47 m initialize(1)
+ME
+MB sm 1 tm 49 m initialize(1)
+MB sm 49 tm 39 m subscribe(IF-CREATED)
+ME
+CM id 17 tid 17 eid 17 etid 17 c cMessage n RegisterProtocol k 1199 pe -1
+BS id 17 tid 17 eid 17 etid 17 c cMessage n RegisterProtocol k 1199 pe 0
+CL id 17 tid 17 eid 17 etid 17 c cMessage n RegisterProtocol k 1199 pe 0 cid 18
+SH sm 49 sg 3
+ES t 0
+ME
+MB sm 1 tm 41 m initialize(1)
+ME
+MB sm 1 tm 42 m initialize(1)
+MS id 42 d "t=2 interfaces;is=s;p=53,287;i=block/table"
+ME
+MB sm 1 tm 51 m initialize(1)
+MB sm 51 tm 39 m subscribe(IF-DELETED)
+ME
+ME
+MB sm 1 tm 53 m initialize(1)
+MB sm 53 tm 39 m subscribe(IF-DELETED)
+ME
+ME
+MB sm 1 tm 2 m initialize(2)
+- DEBUG: Topology found 3 nodes
+MB sm 2 tm 27 m ""
+ME
+MB sm 2 tm 42 m ""
+ME
+MB sm 2 tm 9 m ""
+ME
+MB sm 2 tm 27 m ""
+ME
+MB sm 2 tm 9 m ""
+ME
+MB sm 2 tm 42 m ""
+ME
+MB sm 2 tm 27 m ""
+ME
+MB sm 2 tm 9 m ""
+ME
+MB sm 2 tm 42 m ""
+ME
+MB sm 2 tm 9 m ""
+ME
+- Time spent in IPv4NetworkConfigurator::extractTopology(topology): 0.00036s
+- DEBUG: P2PFlatNet.rte[0]:ppp0
+- DEBUG: P2PFlatNet.server1:ppp0
+- DEBUG: P2PFlatNet.rte[0]:ppp1
+- DEBUG: P2PFlatNet.client1:ppp0
+- Time spent in IPv4NetworkConfigurator::readInterfaceConfiguration(topology): 0.000132s
+- DEBUG: Trying to merge P2PFlatNet.rte[0].ppp0 interface with address specification: 192.168.0.0 / 255.255.0.0
+- DEBUG: Trying to merge P2PFlatNet.rte[0].ppp0 interface with netmask specification: 255.255.0.0 / 255.255.0.0
+- DEBUG: Merged address specification: 192.168.0.0 / 255.255.0.0 / <unspec>
+- DEBUG: Merged netmask specification: 255.255.0.0 / 255.255.0.0 / <unspec>
+- DEBUG: Trying to merge P2PFlatNet.server1.ppp0 interface with address specification: 192.168.0.0 / 255.255.0.0
+- DEBUG: Trying to merge P2PFlatNet.server1.ppp0 interface with netmask specification: 255.255.0.0 / 255.255.0.0
+- DEBUG: Merged address specification: 192.168.0.0 / 255.255.0.0 / <unspec>
+- DEBUG: Merged netmask specification: 255.255.0.0 / 255.255.0.0 / <unspec>
+- DEBUG: Found 2 compatible interfaces
+- DEBUG: Netmask valid length range: 16 - 30
+- DEBUG: Trying network netmask: 255.255.255.252 : 30
+- DEBUG: Counting from: 1 to: 16384
+- DEBUG: Trying network address: 192.168.0.0
+- DEBUG: Matching interface count: 0
+- DEBUG: Selected netmask length: 30
+- DEBUG: Selected network address: 192.168.0.0
+- DEBUG: Selected network netmask: 255.255.255.252
+- DEBUG: Selected interface address: 192.168.0.1
+- DEBUG: Selected interface address: 192.168.0.2
+- DEBUG: Trying to merge P2PFlatNet.rte[0].ppp1 interface with address specification: 192.168.0.0 / 255.255.0.0
+- DEBUG: Trying to merge P2PFlatNet.rte[0].ppp1 interface with netmask specification: 255.255.0.0 / 255.255.0.0
+- DEBUG: Merged address specification: 192.168.0.0 / 255.255.0.0 / <unspec>
+- DEBUG: Merged netmask specification: 255.255.0.0 / 255.255.0.0 / <unspec>
+- DEBUG: Trying to merge P2PFlatNet.client1.ppp0 interface with address specification: 192.168.0.0 / 255.255.0.0
+- DEBUG: Trying to merge P2PFlatNet.client1.ppp0 interface with netmask specification: 255.255.0.0 / 255.255.0.0
+- DEBUG: Merged address specification: 192.168.0.0 / 255.255.0.0 / <unspec>
+- DEBUG: Merged netmask specification: 255.255.0.0 / 255.255.0.0 / <unspec>
+- DEBUG: Found 2 compatible interfaces
+- DEBUG: Netmask valid length range: 16 - 30
+- DEBUG: Trying network netmask: 255.255.255.252 : 30
+- DEBUG: Checking against assigned network address 192.168.0.0
+- DEBUG: Counting from: 1 to: 16384
+- DEBUG: Trying network address: 192.168.0.0
+- DEBUG: Trying network address: 192.168.0.4
+- DEBUG: Matching interface count: 0
+- DEBUG: Selected netmask length: 30
+- DEBUG: Selected network address: 192.168.0.4
+- DEBUG: Selected network netmask: 255.255.255.252
+- DEBUG: Selected interface address: 192.168.0.5
+- DEBUG: Selected interface address: 192.168.0.6
+- Time spent in IPv4NetworkConfigurator::assignAddresses(topology): 0.000265s
+- Time spent in IPv4NetworkConfigurator::readMulticastGroupConfiguration(topology): 9e-06s
+- DEBUG: Adding route P2PFlatNet.rte[0].ppp0 -> P2PFlatNet.server1.ppp0 as dest:192.168.0.0  gw:*  mask:255.255.255.252  metric:0 if:ppp0(<unspec>)  DIRECT MANUAL
+- DEBUG: Adding route P2PFlatNet.rte[0].ppp1 -> P2PFlatNet.client1.ppp0 as dest:192.168.0.4  gw:*  mask:255.255.255.252  metric:0 if:ppp1(<unspec>)  DIRECT MANUAL
+- DEBUG: Adding default routes to P2PFlatNet.server1, node has only one (non-loopback) interface
+- DEBUG: Adding default routes to P2PFlatNet.client1, node has only one (non-loopback) interface
+- Time spent in IPv4NetworkConfigurator::addStaticRoutes(topology): 0.000124s
+- Time spent in IPv4NetworkConfigurator::initialize: 0.000954s
+ME
+MB sm 1 tm 13 m initialize(2)
+MB sm 13 tm 9 m ""
+MB sm 9 tm 6 m "fireChangeNotification(IPv4-CFG, ppp0  on:nwLayer.ifOut[1]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a IPv4:{inet_addr:192.168.0.1/32 mcastgrps:224.0.0.1,224.0.0.2})"
+ME
+CS sm 3 sg 2621440 d "t=ppp0\n192.168.0.1/32,l"
+CS sm 3 sg 2621440 d "t=ppp0\n192.168.0.1/32,l"
+ME
+MB sm 13 tm 9 m ""
+MB sm 9 tm 6 m "fireChangeNotification(IPv4-CFG, ppp0  on:nwLayer.ifOut[1]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a IPv4:{inet_addr:192.168.0.1/30 mcastgrps:224.0.0.1,224.0.0.2})"
+ME
+CS sm 3 sg 2621440 d "t=ppp0\n192.168.0.1/30,l"
+CS sm 3 sg 2621440 d "t=ppp0\n192.168.0.1/30,l"
+ME
+MB sm 13 tm 9 m ""
+MB sm 9 tm 6 m "fireChangeNotification(IPv4-CFG, ppp1  on:nwLayer.ifOut[2]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a IPv4:{inet_addr:192.168.0.5/32 mcastgrps:224.0.0.1,224.0.0.2})"
+ME
+CS sm 3 sg 2621441 d "t=ppp1\n192.168.0.5/32,l"
+CS sm 3 sg 2621441 d "t=ppp1\n192.168.0.5/32,l"
+ME
+MB sm 13 tm 9 m ""
+MB sm 9 tm 6 m "fireChangeNotification(IPv4-CFG, ppp1  on:nwLayer.ifOut[2]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a IPv4:{inet_addr:192.168.0.5/30 mcastgrps:224.0.0.1,224.0.0.2})"
+ME
+CS sm 3 sg 2621441 d "t=ppp1\n192.168.0.5/30,l"
+CS sm 3 sg 2621441 d "t=ppp1\n192.168.0.5/30,l"
+ME
+MB sm 13 tm 8 m addRoute(...)
+MS id 8 d "t=1+0 routes;is=s;p=53,225;i=block/table"
+MB sm 8 tm 6 m "fireChangeNotification(IPv4-ROUTE-ADD, dest:192.168.0.0  gw:*  mask:255.255.255.252  metric:0 if:ppp0(192.168.0.1)  DIRECT MANUAL)"
+ME
+ME
+MB sm 13 tm 8 m addRoute(...)
+MS id 8 d "t=2+0 routes;is=s;p=53,225;i=block/table"
+MB sm 8 tm 6 m "fireChangeNotification(IPv4-ROUTE-ADD, dest:192.168.0.4  gw:*  mask:255.255.255.252  metric:0 if:ppp1(192.168.0.5)  DIRECT MANUAL)"
+ME
+ME
+ME
+MB sm 1 tm 15 m initialize(2)
+ME
+MB sm 1 tm 8 m initialize(2)
+ME
+MB sm 1 tm 19 m initialize(2)
+ME
+MB sm 1 tm 21 m initialize(2)
+ME
+MB sm 1 tm 23 m initialize(2)
+ME
+MB sm 1 tm 30 m initialize(2)
+MB sm 30 tm 27 m ""
+MB sm 27 tm 24 m "fireChangeNotification(IPv4-CFG, ppp0  on:nwLayer.ifOut[1]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a IPv4:{inet_addr:192.168.0.2/32 mcastgrps:224.0.0.1})"
+ME
+CS sm 4 sg 2621440 d "t=ppp0\n192.168.0.2/32,l"
+CS sm 4 sg 2621440 d "t=ppp0\n192.168.0.2/32,l"
+ME
+MB sm 30 tm 27 m ""
+MB sm 27 tm 24 m "fireChangeNotification(IPv4-CFG, ppp0  on:nwLayer.ifOut[1]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a IPv4:{inet_addr:192.168.0.2/30 mcastgrps:224.0.0.1})"
+ME
+CS sm 4 sg 2621440 d "t=ppp0\n192.168.0.2/30,l"
+CS sm 4 sg 2621440 d "t=ppp0\n192.168.0.2/30,l"
+ME
+MB sm 30 tm 26 m addRoute(...)
+MS id 26 d "t=1+0 routes;is=s;p=53,225;i=block/table"
+MB sm 26 tm 24 m "fireChangeNotification(IPv4-ROUTE-ADD, dest:192.168.0.0  gw:*  mask:255.255.255.252  metric:0 if:ppp0(192.168.0.2)  DIRECT MANUAL)"
+ME
+ME
+MB sm 30 tm 26 m addRoute(...)
+MS id 26 d "t=2+0 routes;is=s;p=53,225;i=block/table"
+MB sm 26 tm 24 m "fireChangeNotification(IPv4-ROUTE-ADD, dest:*  gw:192.168.0.1  mask:*  metric:0 if:ppp0(192.168.0.2)  REMOTE MANUAL)"
+ME
+ME
+ME
+MB sm 1 tm 32 m initialize(2)
+ME
+MB sm 1 tm 26 m initialize(2)
+ME
+MB sm 1 tm 36 m initialize(2)
+ME
+MB sm 1 tm 38 m initialize(2)
+ME
+MB sm 1 tm 45 m initialize(2)
+MB sm 45 tm 42 m ""
+MB sm 42 tm 39 m "fireChangeNotification(IPv4-CFG, ppp0  on:nwLayer.ifOut[1]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a IPv4:{inet_addr:192.168.0.6/32 mcastgrps:224.0.0.1})"
+ME
+CS sm 5 sg 2621440 d "t=ppp0\n192.168.0.6/32,l"
+CS sm 5 sg 2621440 d "t=ppp0\n192.168.0.6/32,l"
+ME
+MB sm 45 tm 42 m ""
+MB sm 42 tm 39 m "fireChangeNotification(IPv4-CFG, ppp0  on:nwLayer.ifOut[1]  MTU:4470 MULTICAST POINTTOPOINT  macAddr:n/a IPv4:{inet_addr:192.168.0.6/30 mcastgrps:224.0.0.1})"
+ME
+CS sm 5 sg 2621440 d "t=ppp0\n192.168.0.6/30,l"
+CS sm 5 sg 2621440 d "t=ppp0\n192.168.0.6/30,l"
+ME
+MB sm 45 tm 41 m addRoute(...)
+MS id 41 d "t=1+0 routes;is=s;p=53,225;i=block/table"
+MB sm 41 tm 39 m "fireChangeNotification(IPv4-ROUTE-ADD, dest:192.168.0.4  gw:*  mask:255.255.255.252  metric:0 if:ppp0(192.168.0.6)  DIRECT MANUAL)"
+ME
+ME
+MB sm 45 tm 41 m addRoute(...)
+MS id 41 d "t=2+0 routes;is=s;p=53,225;i=block/table"
+MB sm 41 tm 39 m "fireChangeNotification(IPv4-ROUTE-ADD, dest:*  gw:192.168.0.5  mask:*  metric:0 if:ppp0(192.168.0.6)  REMOTE MANUAL)"
+ME
+ME
+ME
+MB sm 1 tm 47 m initialize(2)
+ME
+MB sm 1 tm 41 m initialize(2)
+ME
+MB sm 1 tm 51 m initialize(2)
+ME
+MB sm 1 tm 53 m initialize(2)
+ME
+MB sm 1 tm 2 m initialize(3)
+ME
+MB sm 1 tm 13 m initialize(3)
+ME
+MB sm 1 tm 15 m initialize(3)
+ME
+MB sm 1 tm 8 m initialize(3)
+MB sm 8 tm 6 m "fireChangeNotification(IPv4-ROUTE-ADD, dest:127.0.0.0  gw:*  mask:255.0.0.0  metric:1 if:lo0(127.0.0.1)  DIRECT IFACENETMASK)"
+ME
+MB sm 8 tm 6 m "fireChangeNotification(IPv4-ROUTE-ADD, dest:192.168.0.0  gw:*  mask:255.255.255.252  metric:200 if:ppp0(192.168.0.1)  DIRECT IFACENETMASK)"
+ME
+MB sm 8 tm 6 m "fireChangeNotification(IPv4-ROUTE-ADD, dest:192.168.0.4  gw:*  mask:255.255.255.252  metric:200 if:ppp1(192.168.0.5)  DIRECT IFACENETMASK)"
+ME
+MS id 8 d "t=routerId: 192.168.0.5\n5+0 routes;is=s;p=53,225;i=block/table"
+ME
+MB sm 1 tm 19 m initialize(3)
+MS id 19 d "t=rcv:0 snt:0;p=98,207;i=block/rxtx"
+ME
+MB sm 1 tm 21 m initialize(3)
+MS id 21 d "t=10Mbps\nrcv:0 snt:0;p=98,207;i=block/rxtx"
+ME
+MB sm 1 tm 23 m initialize(3)
+MS id 23 d "t=10Mbps\nrcv:0 snt:0;p=98,207;i=block/rxtx"
+ME
+MB sm 1 tm 30 m initialize(3)
+ME
+MB sm 1 tm 32 m initialize(3)
+ME
+MB sm 1 tm 26 m initialize(3)
+MB sm 26 tm 24 m "fireChangeNotification(IPv4-ROUTE-ADD, dest:127.0.0.0  gw:*  mask:255.0.0.0  metric:1 if:lo0(127.0.0.1)  DIRECT IFACENETMASK)"
+ME
+MB sm 26 tm 24 m "fireChangeNotification(IPv4-ROUTE-ADD, dest:192.168.0.0  gw:*  mask:255.255.255.252  metric:200 if:ppp0(192.168.0.2)  DIRECT IFACENETMASK)"
+ME
+MS id 26 d "t=routerId: 192.168.0.2\n4+0 routes;is=s;p=53,225;i=block/table"
+ME
+MB sm 1 tm 36 m initialize(3)
+MS id 36 d "t=rcv:0 snt:0;p=98,207;i=block/rxtx"
+ME
+MB sm 1 tm 38 m initialize(3)
+MS id 38 d "t=10Mbps\nrcv:0 snt:0;p=98,207;i=block/rxtx"
+ME
+MB sm 1 tm 45 m initialize(3)
+ME
+MB sm 1 tm 47 m initialize(3)
+ME
+MB sm 1 tm 41 m initialize(3)
+MB sm 41 tm 39 m "fireChangeNotification(IPv4-ROUTE-ADD, dest:127.0.0.0  gw:*  mask:255.0.0.0  metric:1 if:lo0(127.0.0.1)  DIRECT IFACENETMASK)"
+ME
+MB sm 41 tm 39 m "fireChangeNotification(IPv4-ROUTE-ADD, dest:192.168.0.4  gw:*  mask:255.255.255.252  metric:200 if:ppp0(192.168.0.6)  DIRECT IFACENETMASK)"
+ME
+MS id 41 d "t=routerId: 192.168.0.6\n4+0 routes;is=s;p=53,225;i=block/table"
+ME
+MB sm 1 tm 51 m initialize(3)
+MS id 51 d "t=rcv:0 snt:0;p=98,207;i=block/rxtx"
+ME
+MB sm 1 tm 53 m initialize(3)
+MS id 53 d "t=10Mbps\nrcv:0 snt:0;p=98,207;i=block/rxtx"
+ME
+MB sm 1 tm 15 m initialize(4)
+MB sm 15 tm 6 m subscribe(IPv4-CFG)
+ME
+ME
+MB sm 1 tm 32 m initialize(4)
+MB sm 32 tm 24 m subscribe(IPv4-CFG)
+ME
+ME
+MB sm 1 tm 47 m initialize(4)
+MB sm 47 tm 39 m subscribe(IPv4-CFG)
+ME
+ME
+
+E # 1 t 0 m 14 ce 0 msg 1
+DM id 1 tid 1 eid 1 etid 1 c cMessage n RegisterProtocol k 1199 pe 1
+
+E # 2 t 0 m 31 ce 0 msg 6
+DM id 6 tid 6 eid 6 etid 6 c cMessage n RegisterProtocol k 1199 pe 2
+
+E # 3 t 0 m 46 ce 0 msg 10
+DM id 10 tid 10 eid 10 etid 10 c cMessage n RegisterProtocol k 1199 pe 3
+
+E # 4 t 0 m 14 ce 0 msg 13
+DM id 13 tid 13 eid 13 etid 13 c cMessage n RegisterProtocol k 1199 pe 4
+
+E # 5 t 0 m 31 ce 0 msg 15
+DM id 15 tid 15 eid 15 etid 15 c cMessage n RegisterProtocol k 1199 pe 5
+
+E # 6 t 0 m 46 ce 0 msg 17
+DM id 17 tid 17 eid 17 etid 17 c cMessage n RegisterProtocol k 1199 pe 6
+SE e 0 c 13 m "No more events -- simulation ended at event #7, t=0."

@@ -62,7 +62,7 @@ void ServerApp::initialize (void)
     // now save this socket in our map
     this->socketMap_.addSocket (this->socket_);
 
-    cerr << "end client init" << endl;
+    cerr << "end server init" << endl;
 }
 
 void ServerApp::socketEstablished(int connId, void *yourPtr) {
@@ -75,12 +75,45 @@ void ServerApp::socketDataArrived(int connId, void *, cPacket *msg, bool urgent)
        << " received socketDataArrived message. ===" << endl;
 
     // incoming request may be of different types
-    CS_Packet *packet = dynamic_cast<CS_Packet *> (msg);
-    if (!packet) {
-        return;
-    }
+//    CS_Packet *packet = dynamic_cast<CS_Packet *> (msg);
+//    if (!packet) {
+//        return;
+//    }
+//
+//    if(((CS_MSG_TYPE)packet->getType()) == CS_REQUEST) {
+//        CS_Req *req = dynamic_cast<CS_Req *> (msg);
+//        if (!req) {
+//            EV << "Arriving packet is not of type CS_Req" << endl;
+//        } else {
+//            EV << "Arriving packet: Requestor ID = " << req->getId ()
+//               << ", Requested filename = " << req->getFile ()  << endl;
+//
+//            streampos size;
+//            char * memblock;
+//
+//            ifstream file (req->getFile(),ios::in|ios::binary|ios::ate);
+//
+//            if (file.is_open())
+//            {
+//                size = file.tellg();
+//                memblock = new char [size];
+//                file.seekg (0, ios::beg);
+//                file.read (memblock, size);
+//                file.close();
+//            } else {
+//                memblock = new char[8];
+//                size = 0;
+//            }
+//            // now send a response
+//            this->sendResponse (connId, this->localAddress_.c_str (), memblock, size);
+//            delete[] memblock;
+//        }
+//    }
+//
+//    delete msg;
 
-    if(((CS_MSG_TYPE)packet->getType()) == CS_REQUEST) {
+    //if(((CS_MSG_TYPE)packet->getType()) == CS_REQUEST) {
+    cerr << "before cast" << endl;
         CS_Req *req = dynamic_cast<CS_Req *> (msg);
         if (!req) {
             EV << "Arriving packet is not of type CS_Req" << endl;
@@ -108,7 +141,7 @@ void ServerApp::socketDataArrived(int connId, void *, cPacket *msg, bool urgent)
             this->sendResponse (connId, this->localAddress_.c_str (), memblock, size);
             delete[] memblock;
         }
-    }
+    //}
 
     delete msg;
 }
@@ -141,6 +174,43 @@ void ServerApp::sendResponse (int connId, const char *id, char* data, unsigned l
 
     // cleanup
     delete temp_msg;
+}
+
+void ServerApp::handleMessage(cMessage *msg) {
+    TCPSocket *socket = this->socketMap_.findSocketFor(msg);
+
+    if(!socket) {
+        EV << "=== Peer: " << this->localAddress_ << " **No socket yet ** ===" << endl;
+
+        //int connId = cmd->getConnId();
+        // debugging
+        EV << "+++ Peer: " << this->localAddress_ << " creating a new socket with "
+           << "connection ID = " << " ===" << endl;
+
+        // notice that we must use the other constructor of TCPSocket so that it
+        // will use the underlying connID that was created after an incoming
+        // connection establishment message
+        TCPSocket *new_socket = new TCPSocket (msg);
+
+        // register ourselves as the callback object
+        bool *passive = new bool (true);
+        new_socket->setCallbackObject (this, passive);
+
+        // do not forget to set the outgoing gate
+        new_socket->setOutputGate (gate ("tcpOut"));
+
+        // another thing I learned the hard way is that we must set up the data trasnfer
+        // mode for this new socket
+        new_socket->setDataTransferMode (this->socket_->getDataTransferMode ());
+
+        // now save this socket in our map
+        this->socketMap_.addSocket (new_socket);
+
+        cerr << "handlemessage end" << endl;
+        // process the message
+        new_socket->processMessage (msg);
+
+    }
 }
 
 void ServerApp::socketPeerClosed(int connId, void *) {
