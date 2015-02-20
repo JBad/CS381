@@ -5,8 +5,8 @@
  *      Author: gokhale
  */
 
-#ifndef ClientApp_H
-#define ClientApp_H
+#ifndef P2PApp_H
+#define P2PApp_H
 
 #include <string>
 #include <iostream>
@@ -23,12 +23,12 @@ using namespace std;
 
 // any simple module must provide an implementation.  Typically this involves
 // deriving from the cSimpleModule class.
-class ClientApp : public cSimpleModule, public TCPSocket::CallbackInterface
+class P2PApp : public cSimpleModule, public TCPSocket::CallbackInterface
 {
 public:
-    ClientApp (void);
+    P2PApp (void);
 
-  virtual ~ClientApp ();
+  virtual ~P2PApp ();
 
   // need to override these virtual functions
   virtual void initialize (void);
@@ -79,4 +79,4 @@ private:
 
 
 
-#endif /* Client_H */
+#endif /* P2P_H */

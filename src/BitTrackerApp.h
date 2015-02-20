@@ -5,8 +5,8 @@
  *      Author: gokhale
  */
 
-#ifndef ServerApp_H
-#define ServerApp_H
+#ifndef BitTrackerApp_H
+#define BitTrackerApp_H
 
 #include <string>
 #include <vector>
@@ -25,30 +25,31 @@ using namespace std;
 
 // any simple module must provide an implementation.  Typically this involves
 // deriving from the cSimpleModule class.
-class ServerApp : public cSimpleModule, public TCPSocket::CallbackInterface
+class BitTrackerApp : public cSimpleModule, public TCPSocket::CallbackInterface
 {
 public:
-  ServerApp (void);
+  BitTrackerApp (void);
 
-  ~ServerApp ();
+  ~BitTrackerApp ();
 
   // need to override these virtual functions
   virtual void initialize (void);
 
-  virtual void finish (void);
+  virtual void handleMessage(cMessage *msg);
 
-  //@{
-  /** Does nothing but update statistics/status. Redefine to perform or schedule first sending. */
   virtual void socketEstablished(int connId, void *yourPtr);
 
   virtual void socketDataArrived(int connId, void *yourPtr, cPacket *msg, bool urgent);
 
-  /** Since remote TCP closed, invokes close(). Redefine if you want to do something else. */
   virtual void socketPeerClosed(int connId, void *yourPtr);
+
+  virtual void socketFailure();
 
   virtual void sendResponse (int connId, const char *id, char* data, unsigned long size);
 
-  virtual void handleMessage(cMessage *msg);
+  virtual void finish (void);
+
+
 
 private:
   string name_; // some name assigned to us
@@ -61,7 +62,11 @@ private:
 
   string connectAddress_;  // address of our peers
   int connectPort_;        // ports of the peer we connect to
+
+
+  map<string, vector<int> > PeerChunkDB;
+  set<string> peers_; // set of all peers
 };
 
 
-#endif /* ServerApp_H */
+#endif /* BitTrackerApp_H */

@@ -1,4 +1,4 @@
-file 1520 1424292433                                            
+file 1520 1424294373                                            
 version 2
 run General-0-20150218-14:46:57-3601
 attr configname General
@@ -15,36 +15,35 @@ attr replication #0
 attr resultdir results
 attr runnumber 0
 attr seedset 0
-
 vector 8  P2PFlatNet.rte[0].ppp[0].queue  queueLength:vector  ETV
-attr interpolationmode  sample-hold
-attr title  "queue length, vector"
-vector 9  P2PFlatNet.rte[0].ppp[0].ppp  txState:vector  ETV
-attr interpolationmode  sample-hold
-attr title  "tx state, vector"
-vector 19  P2PFlatNet.rte[0].ppp[1].queue  queueLength:vector  ETV
-attr interpolationmode  sample-hold
-attr title  "queue length, vector"
-vector 20  P2PFlatNet.rte[0].ppp[1].ppp  txState:vector  ETV
-attr interpolationmode  sample-hold
-attr title  "tx state, vector"
-vector 35  P2PFlatNet.server1.ppp[0].queue  queueLength:vector  ETV
-attr interpolationmode  sample-hold
-attr title  "queue length, vector"
-vector 36  P2PFlatNet.server1.ppp[0].ppp  txState:vector  ETV
-attr interpolationmode  sample-hold
-attr title  "tx state, vector"
-vector 51  P2PFlatNet.client1.ppp[0].queue  queueLength:vector  ETV
-attr interpolationmode  sample-hold
-attr title  "queue length, vector"
-vector 52  P2PFlatNet.client1.ppp[0].ppp  txState:vector  ETV
-attr interpolationmode  sample-hold
-attr title  "tx state, vector"
+attr interpolationmode sample-hold
+attr title "queue length, vector"
 8	1450 8 0 0 0 0 1 0 0 0 0
+vector 9  P2PFlatNet.rte[0].ppp[0].ppp  txState:vector  ETV
+attr interpolationmode sample-hold
+attr title "tx state, vector"
 9	1458 8 0 0 0 0 1 0 0 0 0
+vector 19  P2PFlatNet.rte[0].ppp[1].queue  queueLength:vector  ETV
+attr interpolationmode sample-hold
+attr title "queue length, vector"
 19	1466 9 0 0 0 0 1 0 0 0 0
+vector 20  P2PFlatNet.rte[0].ppp[1].ppp  txState:vector  ETV
+attr interpolationmode sample-hold
+attr title "tx state, vector"
 20	1475 9 0 0 0 0 1 0 0 0 0
+vector 35  P2PFlatNet.server1.ppp[0].queue  queueLength:vector  ETV
+attr interpolationmode sample-hold
+attr title "queue length, vector"
 35	1484 9 0 0 0 0 1 0 0 0 0
+vector 36  P2PFlatNet.server1.ppp[0].ppp  txState:vector  ETV
+attr interpolationmode sample-hold
+attr title "tx state, vector"
 36	1493 9 0 0 0 0 1 0 0 0 0
+vector 51  P2PFlatNet.client1.ppp[0].queue  queueLength:vector  ETV
+attr interpolationmode sample-hold
+attr title "queue length, vector"
 51	1502 9 0 0 0 0 1 0 0 0 0
+vector 52  P2PFlatNet.client1.ppp[0].ppp  txState:vector  ETV
+attr interpolationmode sample-hold
+attr title "tx state, vector"
 52	1511 9 0 0 0 0 1 0 0 0 0
