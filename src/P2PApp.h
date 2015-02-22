@@ -64,6 +64,39 @@ protected:
   /** Redefine to handle incoming TCPStatusInfo. */
   virtual void socketStatusArrived(int connId, void *yourPtr, TCPStatusInfo *status) {delete status;}
 
+  /**
+   * internal methods for BitTorrent
+   */
+
+  /**
+   * two messages could come in here, either a request for a list of all the chunks we have,
+   * or a request for a specific chunk, will handle which case and provide the char * to send back
+   * for -1 -> list of the chunks it currently has in this case return_value[0] = 'i'
+   * for not -1 it returns that chunk in this case
+   */
+  virtual char * handlePeerRequest(char * bytes);
+
+  /**
+   * just returns a char * with -1 in it.
+   */
+  virtual char * makeRequestForPeerAllChunks();
+
+  /**
+   * File Complete? returns if we have all of the chunks;
+   */
+  virtual boolean fileComplete();
+
+  /**
+   * handleResponseFromTracker
+   */
+
+  virtual void handleResponseFromTracker(char * list);
+
+
+  virtual msg getNewChunk();
+
+
+
 private:
   string name_; // some name assigned to us
 
@@ -74,9 +107,17 @@ private:
 
   string connectAddress_;  // address of our peers
   int connectPort_;        // ports of the peer we connect to
+
+  set<string>peers_;
+  map<string, vector<int>>peerChunks_;
+  vector<int>chunks_;
+  vector<char*> data;
 };
 
-
+struct msg{
+    char* peer;
+    char* bytes;
+};
 
 
 #endif /* P2P_H */

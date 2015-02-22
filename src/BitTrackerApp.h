@@ -49,6 +49,17 @@ public:
 
   virtual void finish (void);
 
+  /**
+   * These methods are decoupling the BitTorrent from the networking cause that is a seperate issue
+   * we are having with OMNeT++
+   */
+
+  /**
+   * Helper method that allows us to accept a char* with the clients name, if they are currently
+   * in the set of peers then we will add them to the set and respond with a serialized version of the
+   * set of peers
+   */
+  virtual char * newPeerApp(char * name);
 
 
 private:

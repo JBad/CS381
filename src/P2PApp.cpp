@@ -212,3 +212,39 @@ void P2PApp::setStatusString(const char *s) {
     }
 }
 
+virtual char * P2PApp::handlePeerRequest(char * bytes){
+    int value = atoi(bytes);
+    if(value == -1){
+        string chunks = "";
+        stringstream chunks;
+        chunks << 'i';
+        for(vector<int>::iterator it = chunks_.begin(); it != chunks_.end();++it){
+            chunks << *it;
+            chunks << ";";
+        }
+        return chunks.str().c_str();
+    }
+    else{
+        return data[value];
+    }
+}
+
+virtual char * P2PApp::makeRequestForPeerAllChunks(){
+    value = -1;
+    stringstream chunks;
+    chunks << value;
+    return chunks.str().c_str();
+}
+
+virtual boolean P2PApp::fileComplete(){
+
+}
+
+virtual void P2PApp::handleResponseFromTracker(char * list){
+    String str(list);
+    String[] peers = str.split(";");
+    int numb;
+    istringstream ( peers[0] ) >> numb;
+
+}
+

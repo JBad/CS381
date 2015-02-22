@@ -86,8 +86,8 @@ void BitTrackerApp::socketDataArrived(int connId, void *, cPacket *msg, bool urg
             streampos size;
             char * memblock;
             //TODO:  here this will send the list of peers, so that the client can ask for the pieces
-            memblock = peers_.getBytes();
-            // now send a response
+        //    memblock = peers_.getBytes();
+     //      // now send a response
             this->sendResponse (connId, this->localAddress_.c_str (), memblock, size);
             delete[] memblock;
         }
@@ -180,6 +180,19 @@ void BitTrackerApp::finish (void)
 {
     EV << "=== finish called" << endl;
     // finalize any statistics collection
+}
+
+char * BitTrackerApp::newPeerApp(char* name){
+    std::string peerName(name);
+    peers_.insert(peerName);
+    //TODO: MAKE THIS PERMAMENT
+    int size = 20;
+    string accum = "20;";
+    for(set<string>::iterator it = peers_.begin(); it!=peers_.end();++i ){
+        accum += *it + ";";
+    }
+    return accum.c_str();
+
 }
 
 // ******* RDT_1_0 SimpleModule *******

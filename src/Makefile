@@ -66,7 +66,7 @@ PROJECTRELATIVE_PATH = src
 O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cpp and .msg files
-OBJS = $O/ClientApp.o $O/ServerApp.o $O/CSAppMsg_m.o
+OBJS = $O/BitTrackerApp.o $O/P2PApp.o $O/CSAppMsg_m.o
 
 # Message files
 MSGFILES = \
@@ -156,9 +156,9 @@ depend:
 	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cpp
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
-$O/ClientApp.o: ClientApp.cpp \
+$O/BitTrackerApp.o: BitTrackerApp.cpp \
+	BitTrackerApp.h \
 	CSAppMsg_m.h \
-	ClientApp.h \
 	$(INET_PROJ)/src/base/Compat.h \
 	$(INET_PROJ)/src/base/INETDefs.h \
 	$(INET_PROJ)/src/networklayer/contract/IPv4Address.h \
@@ -168,9 +168,9 @@ $O/ClientApp.o: ClientApp.cpp \
 	$(INET_PROJ)/src/transport/contract/TCPCommand_m.h \
 	$(INET_PROJ)/src/transport/contract/TCPSocket.h \
 	$(INET_PROJ)/src/transport/contract/TCPSocketMap.h
-$O/ServerApp.o: ServerApp.cpp \
+$O/P2PApp.o: P2PApp.cpp \
 	CSAppMsg_m.h \
-	ServerApp.h \
+	P2PApp.h \
 	$(INET_PROJ)/src/base/Compat.h \
 	$(INET_PROJ)/src/base/INETDefs.h \
 	$(INET_PROJ)/src/networklayer/contract/IPv4Address.h \
