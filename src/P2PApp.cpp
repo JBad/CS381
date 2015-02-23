@@ -223,29 +223,19 @@ char * P2PApp::makePeerResponse(char * bytes){
                 chunks << ";";
             }
         }
-        /*
-        char * writable = new char[chunks.size() + 1];
-        std::copy(chunks.begin(), chunks.end(), writable);
-        writable[chunks.size()] = '\0'; // don't forget the terminating 0
-
-        return writeable;*/
 
         return P2PApp::ss_to_charp(chunks);
-        //return chunks.str().c_str();
     }
     else{
-        return data[value];
+        return data_[value];
     }
 }
 
 char * P2PApp::makeRequestForPeerAllChunks(){
-    /*
-
-    value = -1;
+    int value = -1;
     stringstream chunks;
     chunks << value;
-    return chunks.str().c_str();*/
-    return NULL;
+    return P2PApp::ss_to_charp(chunks); //remember to delete the mem
 }
 
 bool P2PApp::fileComplete(){
@@ -258,27 +248,29 @@ bool P2PApp::fileComplete(){
 }
 
 void P2PApp::handleResponseFromTracker(char * list){
-    vector<string> newPeers = split(std::string str(list), ";");
+    std::string str(list);
+    vector<string> newPeers = P2PApp::split(str, ';');
     for(int i = 0; i < newPeers.size(); ++i){
         peers_.insert(newPeers[i]);
-        pendingRequest_.insert (std::pair<string,int>(newPeers[i],-1));
+        pendingRequests_.insert (std::pair<string,int>(newPeers[i],-1));
     }
 }
 
 void P2PApp::handleResponsefromPeerChunkList(char * list, char * peer) {
     string peerName(peer);
-    vector<string> chunks = split(std::string str(list), ";");
+    std::string str(list);
+    vector<string> chunks = P2PApp::split(str, ';');
     for(int i = 0; i < chunks.size(); ++i){
-        int value = atoi(chunks[i].c_str);
+        int value = atoi(chunks[i].c_str());
         peerChunks_[peerName].insert(value);
     }
 }
 
 void P2PApp::handleResponsefromPeerSingleChunk(char * data, char * peer) {
     string peerName(peer);
-    for(int it = 0; it < chunks.size(); ++it){
-        int value = pendingChunks_[peerName];
-        pendingChunks_[peerName] = -1;
+    for(int it = 0; it < chunks_.size(); ++it){
+        int value = pendingRequests_[peerName];
+        pendingRequests_[peerName] = -1;
         data_[value] = data;
         chunks_[value] = true;
     }
@@ -286,14 +278,13 @@ void P2PApp::handleResponsefromPeerSingleChunk(char * data, char * peer) {
 
 char * P2PApp::makeRequestFor(char * peer) {
     string peerName(peer);
-    set<int> peerChunk = map[peerName];
+    set<int> peerChunk = peerChunks_[peerName];
     for(set<int>::iterator i = peerChunk.begin(); i != peerChunk.end(); ++i){
         if(!chunks_[*i]){
             stringstream chunks;
-            chunks << value;
-            pendingChunks[peerName] = value;
-            //return chunks.str().c_str();
-            return NULL;
+            chunks << *i;
+            pendingRequests_[peerName] = *i;
+            return P2PApp::ss_to_charp(chunks); //remember to delete the mem
         }
     }
     return NULL;
@@ -313,11 +304,13 @@ std::vector<std::string>& P2PApp::split(const std::string &s, char delim, std::v
 
 char* P2PApp::ss_to_charp(std::stringstream& accum)
 {
-    char * writable = new char[accum.size() + 1];
-    std::copy(accum.begin(), accum.end(), writable);
-    writable[accum.size()] = '\0'; // don't forget the terminating 0
+    char * writable;
+    writable = new char[accum.str().size() + 1];
+    std::string str = accum.str();
+    std::copy(str.begin(), str.end(), writable);
+    writable[str.length()] = '\0'; // don't forget the terminating 0
 
-    return writeable;
+    return writable;
 }
 
 

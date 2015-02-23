@@ -55,7 +55,7 @@ public:
 
   static std::vector<std::string> split(const std::string &s, char delim);
 
-  std::vector<std::string>& split(const std::string &s, char delim, std::vector<std::string> &elems);
+  static std::vector<std::string>& split(const std::string &s, char delim, std::vector<std::string> &elems);
 
 protected:
 
@@ -112,6 +112,9 @@ protected:
   virtual char * makeRequestFor(char * peer);
 
 
+  virtual void handleResponsefromPeerSingleChunk(char * data, char * peer);
+
+
 private:
   string name_; // some name assigned to us
 
@@ -125,9 +128,9 @@ private:
 
   set<string>peers_;
   map<string, set<int>>peerChunks_;
-  map<string, int> pendingRequest_;
+  map<string, int> pendingRequests_;
   vector<bool>chunks_;
-  vector<char*> data;
+  vector<char*> data_;
 };
 
 struct msg{

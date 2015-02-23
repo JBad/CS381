@@ -163,6 +163,10 @@ void BitTrackerApp::handleMessage(cMessage *msg) {
     }
 }
 
+void BitTrackerApp::socketFailure (int connId, void *yourPtr, int code) {
+
+}
+
 void BitTrackerApp::socketPeerClosed(int connId, void *) {
     cMessage *temp_msg = new cMessage ("temp");
     TCPCommand *temp_cmd = new TCPCommand ();

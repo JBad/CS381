@@ -43,7 +43,7 @@ public:
 
   virtual void socketPeerClosed(int connId, void *yourPtr);
 
-  virtual void socketFailure();
+  virtual void socketFailure (int connId, void *yourPtr, int code);
 
   virtual void sendResponse (int connId, const char *id, char* data, unsigned long size);
 
