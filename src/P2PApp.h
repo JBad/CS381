@@ -85,7 +85,7 @@ protected:
   /**
    * File Complete? returns if we have all of the chunks;
    */
-  virtual boolean fileComplete();
+  virtual bool fileComplete();
 
   /**
    * handleResponseFromTracker, this is just placing the new peers into the set of current peers

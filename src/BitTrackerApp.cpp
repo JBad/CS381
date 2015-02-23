@@ -185,11 +185,17 @@ void BitTrackerApp::finish (void)
 char * BitTrackerApp::newPeerApp(char* name){
     std::string peerName(name);
     peers_.insert(peerName);
+    string accum = "";
     //TODO: MAKE THIS PERMAMENT
-    for(set<string>::iterator it = peers_.begin(); it!=peers_.end();++i ){
+    for(set<string>::iterator it = peers_.begin(); it!=peers_.end();++it ){
         accum += *it + ";";
     }
-    return accum.c_str();
+    char * writable = new char[accum.size() + 1];
+    std::copy(accum.begin(), accum.end(), writable);
+    writable[accum.size()] = '\0'; // don't forget the terminating 0
+
+    return writable;
+    // don't forget to free the string after finished using it
 
 }
 

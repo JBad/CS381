@@ -251,6 +251,7 @@ virtual void P2PApp::handleResponseFromTracker(char * list){
     vector<string> newPeers = split(String str(list), ";");
     for(int i = 0; i < newPeers.size(); ++i){
         peers_.insert(newPeers[i]);
+        pendingRequest_.insert (std::pair<string,int>(newPeers[i],-1));
     }
 }
 
@@ -259,15 +260,17 @@ virtual void P2PApp::handleResponsefromPeerChunkList(char * list, char * peer) {
     vector<string> chunks = split(String str(list), ";");
     for(int i = 0; i < chunks.size(); ++t){
         int value = atoi(chunks[i].c_str);
-        map[peerName].insert(value);
+        peerChunks_[peerName].insert(value);
     }
 }
 
 virtual void P2PApp::handleResponsefromPeerSingleChunk(char * data, char * peer) {
     string peerName(peer);
     for(int i = 0; i < chunks.size(); ++t){
-        int value = atoi(chunks[i].c_str);
-        map[peerName].insert(value);
+        int value = pendingChunks_[peerName];
+        pendingChunks_[peerName] = -1;
+        data[value] = data;
+        chunks_[value] = true;
     }
 }
 
@@ -278,6 +281,7 @@ virtual char * P2PApp::makeRequestFor(char * peer) {
         if(!chunks_[*i]){
             stringstream chunks;
             chunks << value;
+            pendingChunks[peerName] = value;
             return chunks.str().c_str();
         }
     }
