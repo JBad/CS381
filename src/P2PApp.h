@@ -11,6 +11,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+
 using namespace std;
 
 #include "INETDefs.h"       // this contains imp definitions from the INET
@@ -74,7 +75,7 @@ protected:
    * for -1 -> list of the chunks it currently has in this case return_value[0] = 'i'
    * for not -1 it returns that chunk in this case
    */
-  virtual char * handlePeerRequest(char * bytes);
+  virtual char * makePeerResponse(char * bytes);
 
   /**
    * just returns a char * with -1 in it.
@@ -87,14 +88,21 @@ protected:
   virtual boolean fileComplete();
 
   /**
-   * handleResponseFromTracker
+   * handleResponseFromTracker, this is just placing the new peers into the set of current peers
    */
-
   virtual void handleResponseFromTracker(char * list);
 
+  /**
+   * Given the peer and a list of the chunks that that peer has, we store it, so now we know who
+   * to ask for what piece
+   */
+  virtual void handleResponsefromPeerChunkList(char * list, char * peer);
 
-  virtual msg getNewChunk();
-
+  /**
+   * Looks for peer in the list of peer and see what chunk this peer has, that we do not have
+   * and sends a request for that chunk, if there is nothing new it returns null, CHECK this!
+   */
+  virtual char * makeRequestFor(char * peer);
 
 
 private:
@@ -109,8 +117,9 @@ private:
   int connectPort_;        // ports of the peer we connect to
 
   set<string>peers_;
-  map<string, vector<int>>peerChunks_;
-  vector<int>chunks_;
+  map<string, set<int>>peerChunks_;
+  map<string, int> pendingRequest_;
+  vector<bool>chunks_;
   vector<char*> data;
 };
 
@@ -118,6 +127,5 @@ struct msg{
     char* peer;
     char* bytes;
 };
-
 
 #endif /* P2P_H */

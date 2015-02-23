@@ -186,8 +186,6 @@ char * BitTrackerApp::newPeerApp(char* name){
     std::string peerName(name);
     peers_.insert(peerName);
     //TODO: MAKE THIS PERMAMENT
-    int size = 20;
-    string accum = "20;";
     for(set<string>::iterator it = peers_.begin(); it!=peers_.end();++i ){
         accum += *it + ";";
     }

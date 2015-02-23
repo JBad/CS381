@@ -212,15 +212,17 @@ void P2PApp::setStatusString(const char *s) {
     }
 }
 
-virtual char * P2PApp::handlePeerRequest(char * bytes){
+virtual char * P2PApp::makePeerResponse(char * bytes){
     int value = atoi(bytes);
     if(value == -1){
         string chunks = "";
         stringstream chunks;
         chunks << 'i';
-        for(vector<int>::iterator it = chunks_.begin(); it != chunks_.end();++it){
-            chunks << *it;
-            chunks << ";";
+        for(int i = 0; i < 20; ++i){
+            if(chunks_[i] == true){
+                chunks << i;
+                chunks << ";";
+            }
         }
         return chunks.str().c_str();
     }
@@ -236,15 +238,65 @@ virtual char * P2PApp::makeRequestForPeerAllChunks(){
     return chunks.str().c_str();
 }
 
-virtual boolean P2PApp::fileComplete(){
-
+virtual bool P2PApp::fileComplete(){
+    for(int i = 0; i < 20; ++i){
+        if(!chunks_[i]){
+            return false;
+        }
+    }
+    return true;
 }
 
 virtual void P2PApp::handleResponseFromTracker(char * list){
-    String str(list);
-    String[] peers = str.split(";");
-    int numb;
-    istringstream ( peers[0] ) >> numb;
-
+    vector<string> newPeers = split(String str(list), ";");
+    for(int i = 0; i < newPeers.size(); ++i){
+        peers_.insert(newPeers[i]);
+    }
 }
 
+virtual void P2PApp::handleResponsefromPeerChunkList(char * list, char * peer) {
+    string peerName(peer);
+    vector<string> chunks = split(String str(list), ";");
+    for(int i = 0; i < chunks.size(); ++t){
+        int value = atoi(chunks[i].c_str);
+        map[peerName].insert(value);
+    }
+}
+
+virtual void P2PApp::handleResponsefromPeerSingleChunk(char * data, char * peer) {
+    string peerName(peer);
+    for(int i = 0; i < chunks.size(); ++t){
+        int value = atoi(chunks[i].c_str);
+        map[peerName].insert(value);
+    }
+}
+
+virtual char * P2PApp::makeRequestFor(char * peer) {
+    string peerName(peer);
+    set<int> peerChunk = map[peerName];
+    for(set<int>::iterator i = peerChunk.begin(); i != peerChunk.end(); ++i){
+        if(!chunks_[*i]){
+            stringstream chunks;
+            chunks << value;
+            return chunks.str().c_str();
+        }
+    }
+    return null;
+}
+
+
+std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
+    std::stringstream ss(s);
+    std::string item;
+    while (std::getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+    return elems;
+}
+
+
+std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    split(s, delim, elems);
+    return elems;
+}
