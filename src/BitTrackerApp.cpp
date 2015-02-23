@@ -76,12 +76,12 @@ void BitTrackerApp::socketDataArrived(int connId, void *, cPacket *msg, bool urg
 
     //This is going to be a request for the peers, so we will simply return the list of peers.
     cerr << "before cast" << endl;
-        CS_Req *req = dynamic_cast<CS_Req *> (msg);
+        Tracker_Req *req = dynamic_cast<Tracker_Req *> (msg);
         if (!req) {
             EV << "Arriving packet is not of type CS_Req" << endl;
         } else {
-            EV << "Arriving packet: Requestor ID = " << req->getId ()
-               << ", Requested filename = " << req->getFile ()  << endl;
+            //EV << "Arriving packet: Requestor ID = " << req->getId ()
+            //   << ", Requested filename = " << req->getFile ()  << endl;
 
             streampos size;
             char * memblock;
@@ -110,15 +110,15 @@ void BitTrackerApp::sendResponse (int connId, const char *id, char* data, unsign
     if (!socket) {
         EV << ">>> Cannot find socket to send request <<< " << endl;
     } else {
-        CS_Resp *resp = new CS_Resp ();
-        resp->setType ((int)CS_RESPONSE);
+        Tracker_Resp *resp = new Tracker_Resp ();
+        resp->setType ((int)Tracker_RESPONSE);
         resp->setId (id);
-        resp->setSize (size);
+        //resp->setSize (size);
         // need to set the byte length else nothing gets sent as I found the hard way
         resp->setByteLength (128);  // I think we can set any length we want :-)
-        resp->setDataArraySize(size);
-        for(int i = 0; i < size; ++i)
-            resp->setData(i, data[i]);
+        //resp->setDataArraySize(size);
+        //for(int i = 0; i < size; ++i)
+            //resp->setData(i, data[i]);
         socket->send (resp);
     }
 

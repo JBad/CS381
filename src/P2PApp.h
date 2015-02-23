@@ -39,7 +39,7 @@ public:
 
   virtual void handleTimer (cMessage *msg);
 
-  virtual void handleResponse (CS_Resp *res, int connId);
+  //virtual void handleResponse (Tracker_Resp *res, int connId);
 
   virtual void connect(void);
 

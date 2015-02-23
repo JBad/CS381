@@ -18,46 +18,54 @@
 /**
  * Enum generated from <tt>CSAppMsg.msg:16</tt> by nedtool.
  * <pre>
- * enum CS_MSG_TYPE
+ * enum BT_MSG_TYPE
  * {
  * 
- *     CS_REQUEST = 0;
- *     CS_RESPONSE = 1;
+ *     Tracker_REQUEST = 0;
+ *     Tracker_RESPONSE = 1;
+ *     Peer_INFO_REQUEST = 2;
+ *     Peer_INFO_RESPONSE = 3;
+ *     Peer_CHUNK_REQUEST = 4;
+ *     Peer_CHUNK_RESPONSE = 5;
  * }
  * </pre>
  */
-enum CS_MSG_TYPE {
-    CS_REQUEST = 0,
-    CS_RESPONSE = 1
+enum BT_MSG_TYPE {
+    Tracker_REQUEST = 0,
+    Tracker_RESPONSE = 1,
+    Peer_INFO_REQUEST = 2,
+    Peer_INFO_RESPONSE = 3,
+    Peer_CHUNK_REQUEST = 4,
+    Peer_CHUNK_RESPONSE = 5
 };
 
 /**
- * Class generated from <tt>CSAppMsg.msg:22</tt> by nedtool.
+ * Class generated from <tt>CSAppMsg.msg:26</tt> by nedtool.
  * <pre>
- * packet CS_Packet
+ * packet BT_Packet
  * {
- *     int type @enum(CS_MSG_TYPE);  // our message type
+ *     int type @enum(BT_MSG_TYPE);  // our message type
  * }
  * </pre>
  */
-class CS_Packet : public ::cPacket
+class BT_Packet : public ::cPacket
 {
   protected:
     int type_var;
 
   private:
-    void copy(const CS_Packet& other);
+    void copy(const BT_Packet& other);
 
   protected:
     // protected and unimplemented operator==(), to prevent accidental usage
-    bool operator==(const CS_Packet&);
+    bool operator==(const BT_Packet&);
 
   public:
-    CS_Packet(const char *name=NULL, int kind=0);
-    CS_Packet(const CS_Packet& other);
-    virtual ~CS_Packet();
-    CS_Packet& operator=(const CS_Packet& other);
-    virtual CS_Packet *dup() const {return new CS_Packet(*this);}
+    BT_Packet(const char *name=NULL, int kind=0);
+    BT_Packet(const BT_Packet& other);
+    virtual ~BT_Packet();
+    BT_Packet& operator=(const BT_Packet& other);
+    virtual BT_Packet *dup() const {return new BT_Packet(*this);}
     virtual void parsimPack(cCommBuffer *b);
     virtual void parsimUnpack(cCommBuffer *b);
 
@@ -66,99 +74,295 @@ class CS_Packet : public ::cPacket
     virtual void setType(int type);
 };
 
-inline void doPacking(cCommBuffer *b, CS_Packet& obj) {obj.parsimPack(b);}
-inline void doUnpacking(cCommBuffer *b, CS_Packet& obj) {obj.parsimUnpack(b);}
+inline void doPacking(cCommBuffer *b, BT_Packet& obj) {obj.parsimPack(b);}
+inline void doUnpacking(cCommBuffer *b, BT_Packet& obj) {obj.parsimUnpack(b);}
 
 /**
- * Class generated from <tt>CSAppMsg.msg:27</tt> by nedtool.
+ * Class generated from <tt>CSAppMsg.msg:31</tt> by nedtool.
  * <pre>
- * packet CS_Req extends CS_Packet
+ * packet Tracker_Req extends BT_Packet
  * {
  *     string id;		        // announce the requestor's ID
- *     string file;        // request for a file
  * }
  * </pre>
  */
-class CS_Req : public ::CS_Packet
+class Tracker_Req : public ::BT_Packet
 {
   protected:
     opp_string id_var;
-    opp_string file_var;
 
   private:
-    void copy(const CS_Req& other);
+    void copy(const Tracker_Req& other);
 
   protected:
     // protected and unimplemented operator==(), to prevent accidental usage
-    bool operator==(const CS_Req&);
+    bool operator==(const Tracker_Req&);
 
   public:
-    CS_Req(const char *name=NULL, int kind=0);
-    CS_Req(const CS_Req& other);
-    virtual ~CS_Req();
-    CS_Req& operator=(const CS_Req& other);
-    virtual CS_Req *dup() const {return new CS_Req(*this);}
+    Tracker_Req(const char *name=NULL, int kind=0);
+    Tracker_Req(const Tracker_Req& other);
+    virtual ~Tracker_Req();
+    Tracker_Req& operator=(const Tracker_Req& other);
+    virtual Tracker_Req *dup() const {return new Tracker_Req(*this);}
     virtual void parsimPack(cCommBuffer *b);
     virtual void parsimUnpack(cCommBuffer *b);
 
     // field getter/setter methods
     virtual const char * getId() const;
     virtual void setId(const char * id);
-    virtual const char * getFile() const;
-    virtual void setFile(const char * file);
 };
 
-inline void doPacking(cCommBuffer *b, CS_Req& obj) {obj.parsimPack(b);}
-inline void doUnpacking(cCommBuffer *b, CS_Req& obj) {obj.parsimUnpack(b);}
+inline void doPacking(cCommBuffer *b, Tracker_Req& obj) {obj.parsimPack(b);}
+inline void doUnpacking(cCommBuffer *b, Tracker_Req& obj) {obj.parsimUnpack(b);}
 
 /**
- * Class generated from <tt>CSAppMsg.msg:33</tt> by nedtool.
+ * Class generated from <tt>CSAppMsg.msg:36</tt> by nedtool.
  * <pre>
- * packet CS_Resp extends CS_Packet
+ * packet Tracker_Resp extends BT_Packet
  * {
  *     string id;			// ID of the responder
- *     unsigned long size;	// size of the data	
- *     char data[];    // contents of the file
+ *     string peers[];
+ *     int numPeers;
  * }
  * </pre>
  */
-class CS_Resp : public ::CS_Packet
+class Tracker_Resp : public ::BT_Packet
 {
   protected:
     opp_string id_var;
-    unsigned long size_var;
-    char *data_var; // array ptr
-    unsigned int data_arraysize;
+    opp_string *peers_var; // array ptr
+    unsigned int peers_arraysize;
+    int numPeers_var;
 
   private:
-    void copy(const CS_Resp& other);
+    void copy(const Tracker_Resp& other);
 
   protected:
     // protected and unimplemented operator==(), to prevent accidental usage
-    bool operator==(const CS_Resp&);
+    bool operator==(const Tracker_Resp&);
 
   public:
-    CS_Resp(const char *name=NULL, int kind=0);
-    CS_Resp(const CS_Resp& other);
-    virtual ~CS_Resp();
-    CS_Resp& operator=(const CS_Resp& other);
-    virtual CS_Resp *dup() const {return new CS_Resp(*this);}
+    Tracker_Resp(const char *name=NULL, int kind=0);
+    Tracker_Resp(const Tracker_Resp& other);
+    virtual ~Tracker_Resp();
+    Tracker_Resp& operator=(const Tracker_Resp& other);
+    virtual Tracker_Resp *dup() const {return new Tracker_Resp(*this);}
     virtual void parsimPack(cCommBuffer *b);
     virtual void parsimUnpack(cCommBuffer *b);
 
     // field getter/setter methods
     virtual const char * getId() const;
     virtual void setId(const char * id);
-    virtual unsigned long getSize() const;
-    virtual void setSize(unsigned long size);
+    virtual void setPeersArraySize(unsigned int size);
+    virtual unsigned int getPeersArraySize() const;
+    virtual const char * getPeers(unsigned int k) const;
+    virtual void setPeers(unsigned int k, const char * peers);
+    virtual int getNumPeers() const;
+    virtual void setNumPeers(int numPeers);
+};
+
+inline void doPacking(cCommBuffer *b, Tracker_Resp& obj) {obj.parsimPack(b);}
+inline void doUnpacking(cCommBuffer *b, Tracker_Resp& obj) {obj.parsimUnpack(b);}
+
+/**
+ * Class generated from <tt>CSAppMsg.msg:43</tt> by nedtool.
+ * <pre>
+ * packet Peer_Packet
+ * {
+ *     int type @enum(BT_MSG_TYPE);
+ * }
+ * </pre>
+ */
+class Peer_Packet : public ::cPacket
+{
+  protected:
+    int type_var;
+
+  private:
+    void copy(const Peer_Packet& other);
+
+  protected:
+    // protected and unimplemented operator==(), to prevent accidental usage
+    bool operator==(const Peer_Packet&);
+
+  public:
+    Peer_Packet(const char *name=NULL, int kind=0);
+    Peer_Packet(const Peer_Packet& other);
+    virtual ~Peer_Packet();
+    Peer_Packet& operator=(const Peer_Packet& other);
+    virtual Peer_Packet *dup() const {return new Peer_Packet(*this);}
+    virtual void parsimPack(cCommBuffer *b);
+    virtual void parsimUnpack(cCommBuffer *b);
+
+    // field getter/setter methods
+    virtual int getType() const;
+    virtual void setType(int type);
+};
+
+inline void doPacking(cCommBuffer *b, Peer_Packet& obj) {obj.parsimPack(b);}
+inline void doUnpacking(cCommBuffer *b, Peer_Packet& obj) {obj.parsimUnpack(b);}
+
+/**
+ * Class generated from <tt>CSAppMsg.msg:48</tt> by nedtool.
+ * <pre>
+ * packet Peer_InfoReq extends BT_Packet
+ * {
+ * }
+ * </pre>
+ */
+class Peer_InfoReq : public ::BT_Packet
+{
+  protected:
+
+  private:
+    void copy(const Peer_InfoReq& other);
+
+  protected:
+    // protected and unimplemented operator==(), to prevent accidental usage
+    bool operator==(const Peer_InfoReq&);
+
+  public:
+    Peer_InfoReq(const char *name=NULL, int kind=0);
+    Peer_InfoReq(const Peer_InfoReq& other);
+    virtual ~Peer_InfoReq();
+    Peer_InfoReq& operator=(const Peer_InfoReq& other);
+    virtual Peer_InfoReq *dup() const {return new Peer_InfoReq(*this);}
+    virtual void parsimPack(cCommBuffer *b);
+    virtual void parsimUnpack(cCommBuffer *b);
+
+    // field getter/setter methods
+};
+
+inline void doPacking(cCommBuffer *b, Peer_InfoReq& obj) {obj.parsimPack(b);}
+inline void doUnpacking(cCommBuffer *b, Peer_InfoReq& obj) {obj.parsimUnpack(b);}
+
+/**
+ * Class generated from <tt>CSAppMsg.msg:52</tt> by nedtool.
+ * <pre>
+ * packet Peer_InfoResp extends BT_Packet
+ * {
+ *     int chunks[];
+ *     int size;
+ * }
+ * </pre>
+ */
+class Peer_InfoResp : public ::BT_Packet
+{
+  protected:
+    int *chunks_var; // array ptr
+    unsigned int chunks_arraysize;
+    int size_var;
+
+  private:
+    void copy(const Peer_InfoResp& other);
+
+  protected:
+    // protected and unimplemented operator==(), to prevent accidental usage
+    bool operator==(const Peer_InfoResp&);
+
+  public:
+    Peer_InfoResp(const char *name=NULL, int kind=0);
+    Peer_InfoResp(const Peer_InfoResp& other);
+    virtual ~Peer_InfoResp();
+    Peer_InfoResp& operator=(const Peer_InfoResp& other);
+    virtual Peer_InfoResp *dup() const {return new Peer_InfoResp(*this);}
+    virtual void parsimPack(cCommBuffer *b);
+    virtual void parsimUnpack(cCommBuffer *b);
+
+    // field getter/setter methods
+    virtual void setChunksArraySize(unsigned int size);
+    virtual unsigned int getChunksArraySize() const;
+    virtual int getChunks(unsigned int k) const;
+    virtual void setChunks(unsigned int k, int chunks);
+    virtual int getSize() const;
+    virtual void setSize(int size);
+};
+
+inline void doPacking(cCommBuffer *b, Peer_InfoResp& obj) {obj.parsimPack(b);}
+inline void doUnpacking(cCommBuffer *b, Peer_InfoResp& obj) {obj.parsimUnpack(b);}
+
+/**
+ * Class generated from <tt>CSAppMsg.msg:58</tt> by nedtool.
+ * <pre>
+ * packet Peer_ChunkReq extends BT_Packet
+ * {
+ *     int chunk;
+ * }
+ * </pre>
+ */
+class Peer_ChunkReq : public ::BT_Packet
+{
+  protected:
+    int chunk_var;
+
+  private:
+    void copy(const Peer_ChunkReq& other);
+
+  protected:
+    // protected and unimplemented operator==(), to prevent accidental usage
+    bool operator==(const Peer_ChunkReq&);
+
+  public:
+    Peer_ChunkReq(const char *name=NULL, int kind=0);
+    Peer_ChunkReq(const Peer_ChunkReq& other);
+    virtual ~Peer_ChunkReq();
+    Peer_ChunkReq& operator=(const Peer_ChunkReq& other);
+    virtual Peer_ChunkReq *dup() const {return new Peer_ChunkReq(*this);}
+    virtual void parsimPack(cCommBuffer *b);
+    virtual void parsimUnpack(cCommBuffer *b);
+
+    // field getter/setter methods
+    virtual int getChunk() const;
+    virtual void setChunk(int chunk);
+};
+
+inline void doPacking(cCommBuffer *b, Peer_ChunkReq& obj) {obj.parsimPack(b);}
+inline void doUnpacking(cCommBuffer *b, Peer_ChunkReq& obj) {obj.parsimUnpack(b);}
+
+/**
+ * Class generated from <tt>CSAppMsg.msg:63</tt> by nedtool.
+ * <pre>
+ * packet Peer_ChunkResp extends BT_Packet
+ * {
+ *     char data[];
+ *     int size;
+ * }
+ * </pre>
+ */
+class Peer_ChunkResp : public ::BT_Packet
+{
+  protected:
+    char *data_var; // array ptr
+    unsigned int data_arraysize;
+    int size_var;
+
+  private:
+    void copy(const Peer_ChunkResp& other);
+
+  protected:
+    // protected and unimplemented operator==(), to prevent accidental usage
+    bool operator==(const Peer_ChunkResp&);
+
+  public:
+    Peer_ChunkResp(const char *name=NULL, int kind=0);
+    Peer_ChunkResp(const Peer_ChunkResp& other);
+    virtual ~Peer_ChunkResp();
+    Peer_ChunkResp& operator=(const Peer_ChunkResp& other);
+    virtual Peer_ChunkResp *dup() const {return new Peer_ChunkResp(*this);}
+    virtual void parsimPack(cCommBuffer *b);
+    virtual void parsimUnpack(cCommBuffer *b);
+
+    // field getter/setter methods
     virtual void setDataArraySize(unsigned int size);
     virtual unsigned int getDataArraySize() const;
     virtual char getData(unsigned int k) const;
     virtual void setData(unsigned int k, char data);
+    virtual int getSize() const;
+    virtual void setSize(int size);
 };
 
-inline void doPacking(cCommBuffer *b, CS_Resp& obj) {obj.parsimPack(b);}
-inline void doUnpacking(cCommBuffer *b, CS_Resp& obj) {obj.parsimUnpack(b);}
+inline void doPacking(cCommBuffer *b, Peer_ChunkResp& obj) {obj.parsimPack(b);}
+inline void doUnpacking(cCommBuffer *b, Peer_ChunkResp& obj) {obj.parsimUnpack(b);}
 
 
 #endif // ifndef _CSAPPMSG_M_H_

@@ -26,8 +26,6 @@ P2PApp::~P2PApp(void) {
 void P2PApp::initialize(void) {
     cSimpleModule::initialize();
 
-
-
     this->localAddress_ = this->par("localAddress").stringValue();
     this->localPort_ = this->par("localPort");
     this->connectPort_ = this->par("connectPort");
@@ -108,78 +106,142 @@ void P2PApp::close() {
     this->socket_->close();
 }
 
-void P2PApp::socketDataArrived(int connId, void *, cPacket *msg,
-        bool urgent) {
+void P2PApp::socketDataArrived(int connId, void *, cPacket *msg, bool urgent) {
     EV << "=== Peer: " << this->localAddress_
-       << " received socketDataArrived message. ===" << endl;
+              << " received socketDataArrived message. ===" << endl;
 
-    CS_Packet *packet = dynamic_cast<CS_Packet *>(msg);
+    BT_Packet *packet = dynamic_cast<BT_Packet *>(msg);
 
-    if(!packet) {
+    if (!packet) {
         return;
     }
+    (BT_MSG_TYPE) packet->getType();
 
-    if(((CS_MSG_TYPE)packet->getType()) == CS_RESPONSE) {
-        CS_Resp *resp = dynamic_cast<CS_Resp *>(msg);
-
-        if(!resp) {
-            EV << "Arriving packet is not of type P2P_Req" << endl;
-        } else {
-            setStatusString("Response");
-            EV << "Arriving packet: Responder ID = " << resp->getId ()
-               << ", size = " << resp->getSize () << endl;
-
-        }
+    switch ((BT_MSG_TYPE) packet->getType()) {
+    case Tracker_REQUEST: {
+        EV << "This shouldn't be happening since we are not a tracker." << endl;
     }
+    case Tracker_RESPONSE: {
+        Tracker_Resp *resp = dynamic_cast<Tracker_Resp *>(msg);
+
+        if (!resp) {
+            EV << "Arriving packet is not of type Tracker_Resp" << endl;
+        } else {
+            EV << "Arriving packet: Responder ID = " << resp->getId() << endl;
+        }
+
+        //this->handleResponseFromTracker()
+        //TODO
+    }
+    case Peer_INFO_REQUEST:
+    {
+        Peer_InfoReq *resp = dynamic_cast<Peer_InfoReq *>(msg);
+
+        if (!resp) {
+            EV << "Arriving packet is not of type Peer_InfoReq" << endl;
+        } else {
+            EV << "Arriving packet: Responder ID = " << resp->getId() << endl;
+        }
+
+        //this->makePeerResponse()
+        //TODO: always do -1 case
+    }
+    case Peer_INFO_RESPONSE:
+    {
+        Peer_InfoResp *resp = dynamic_cast<Peer_InfoResp *>(msg);
+
+        if (!resp) {
+            EV << "Arriving packet is not of type Peer_InfoResp" << endl;
+        } else {
+            EV << "Arriving packet: Responder ID = " << resp->getId() << endl;
+        }
+
+        //this->handleResponseFromPeerChunkList()
+        //TODO: change
+    }
+    case Peer_CHUNK_REQUEST:
+    {
+        Peer_ChunkReq *resp = dynamic_cast<Peer_ChunkReq *>(msg);
+
+        if (!resp) {
+            EV << "Arriving packet is not of type Peer_ChunkReq" << endl;
+        } else {
+            EV << "Arriving packet: Responder ID = " << resp->getId() << endl;
+        }
+
+        //this->makePeerResponse()
+        //TODO: not -1 case
+    }
+    case Peer_CHUNK_RESPONSE:
+    {
+        Peer_ChunkResp *resp = dynamic_cast<Peer_ChunkResp *>(msg);
+
+        if (!resp) {
+            EV << "Arriving packet is not of type Peer_ChunkResp" << endl;
+        } else {
+            EV << "Arriving packet: Responder ID = " << resp->getId() << endl;
+        }
+
+        //this->handleResponsePeerSingleChunk()
+        //TODO
+    }
+    default:
+    {
+            EV << "Arriving packet is not of type that is recognized!!" << endl;
+    }
+    }
+
 
     delete msg;
 }
+/*
+void P2PApp::handleResponse(CS_Resp *res, int connId) {
+    if (res->getDataArraySize() > 0) {
 
-void P2PApp::handleResponse (CS_Resp *res, int connId) {
-    if(res->getDataArraySize() > 0) {
-        /*
-        vector<char> curChunk;
-        for(int i = 0; i < res->getDataArraySize(); ++i) {
-            curChunk.push_back(res->getData(i));
-        }
-        file_.push_back(curChunk);
+         vector<char> curChunk;
+         for(int i = 0; i < res->getDataArraySize(); ++i) {
+         curChunk.push_back(res->getData(i));
+         }
+         file_.push_back(curChunk);
 
-        //modify for bittorrent to just ask for new chunk
-        this->sendRequest(connId);*/
+         //modify for bittorrent to just ask for new chunk
+         this->sendRequest(connId);
         ofstream myfile;
         myfile.open("dummy-P2P.txt");
-        for(int i = 0; i < res->getDataArraySize(); ++i) {
+        for (int i = 0; i < res->getDataArraySize(); ++i) {
             myfile << res->getData(i);
         }
         myfile.close();
     }
-}
+}*/
 
-void P2PApp::sendRequest (int connId, const char* id, string fname) {
-    CS_Req *req = new CS_Req();
-    req->setType(int(CS_REQUEST));
+void P2PApp::sendRequest(int connId, const char* id, string fname) {
+    Tracker_Req *req = new Tracker_Req();
+    req->setType(int(Tracker_REQUEST));
     req->setId(this->localAddress_.c_str());
-    req->setFile(fname.c_str());
+    //req->setFile(fname.c_str());
 
     req->setByteLength(128);
 
     socket_->send(req);
 }
 
-
 void P2PApp::socketEstablished(int connId, void *role) {
     EV << "=== Peer: " << this->localAddress_
-       << " received socketEstablished message on connID " << connId << " ===" << endl;
+              << " received socketEstablished message on connID " << connId
+              << " ===" << endl;
 
     setStatusString("ConnectionEstablished");
 
-    bool *passive = static_cast<bool *> (role);
+    bool *passive = static_cast<bool *>(role);
     if (*passive) {
-        EV << "=== We are in passive role and hence just wait for an incoming req ===" << endl;
+        EV
+                  << "=== We are in passive role and hence just wait for an incoming req ==="
+                  << endl;
     } else {
         EV << "=== We are in active role and hence initiate a req ===" << endl;
 
-        this->sendRequest (connId, this->localAddress_.c_str (), "dummy.txt");
+        this->sendRequest(connId, this->localAddress_.c_str(), "dummy.txt");
     }
 }
 
@@ -212,47 +274,46 @@ void P2PApp::setStatusString(const char *s) {
     }
 }
 
-char * P2PApp::makePeerResponse(char * bytes){
+char * P2PApp::makePeerResponse(char * bytes) {
     int value = atoi(bytes);
-    if(value == -1){
+    if (value == -1) {
         stringstream chunks;
         chunks << "i";
-        for(int i = 0; i < 20; ++i){
-            if(chunks_[i] == true){
+        for (int i = 0; i < 20; ++i) {
+            if (chunks_[i] == true) {
                 chunks << i;
                 chunks << ";";
             }
         }
 
         return P2PApp::ss_to_charp(chunks);
-    }
-    else{
+    } else {
         return data_[value];
     }
 }
 
-char * P2PApp::makeRequestForPeerAllChunks(){
+char * P2PApp::makeRequestForPeerAllChunks() {
     int value = -1;
     stringstream chunks;
     chunks << value;
     return P2PApp::ss_to_charp(chunks); //remember to delete the mem
 }
 
-bool P2PApp::fileComplete(){
-    for(int i = 0; i < 20; ++i){
-        if(!chunks_[i]){
+bool P2PApp::fileComplete() {
+    for (int i = 0; i < 20; ++i) {
+        if (!chunks_[i]) {
             return false;
         }
     }
     return true;
 }
 
-void P2PApp::handleResponseFromTracker(char * list){
+void P2PApp::handleResponseFromTracker(char * list) {
     std::string str(list);
     vector<string> newPeers = P2PApp::split(str, ';');
-    for(int i = 0; i < newPeers.size(); ++i){
+    for (int i = 0; i < newPeers.size(); ++i) {
         peers_.insert(newPeers[i]);
-        pendingRequests_.insert (std::pair<string,int>(newPeers[i],-1));
+        pendingRequests_.insert(std::pair<string, int>(newPeers[i], -1));
     }
 }
 
@@ -260,7 +321,7 @@ void P2PApp::handleResponsefromPeerChunkList(char * list, char * peer) {
     string peerName(peer);
     std::string str(list);
     vector<string> chunks = P2PApp::split(str, ';');
-    for(int i = 0; i < chunks.size(); ++i){
+    for (int i = 0; i < chunks.size(); ++i) {
         int value = atoi(chunks[i].c_str());
         peerChunks_[peerName].insert(value);
     }
@@ -268,7 +329,7 @@ void P2PApp::handleResponsefromPeerChunkList(char * list, char * peer) {
 
 void P2PApp::handleResponsefromPeerSingleChunk(char * data, char * peer) {
     string peerName(peer);
-    for(int it = 0; it < chunks_.size(); ++it){
+    for (int it = 0; it < chunks_.size(); ++it) {
         int value = pendingRequests_[peerName];
         pendingRequests_[peerName] = -1;
         data_[value] = data;
@@ -279,8 +340,8 @@ void P2PApp::handleResponsefromPeerSingleChunk(char * data, char * peer) {
 char * P2PApp::makeRequestFor(char * peer) {
     string peerName(peer);
     set<int> peerChunk = peerChunks_[peerName];
-    for(set<int>::iterator i = peerChunk.begin(); i != peerChunk.end(); ++i){
-        if(!chunks_[*i]){
+    for (set<int>::iterator i = peerChunk.begin(); i != peerChunk.end(); ++i) {
+        if (!chunks_[*i]) {
             stringstream chunks;
             chunks << *i;
             pendingRequests_[peerName] = *i;
@@ -290,9 +351,8 @@ char * P2PApp::makeRequestFor(char * peer) {
     return NULL;
 }
 
-
-
-std::vector<std::string>& P2PApp::split(const std::string &s, char delim, std::vector<std::string> &elems) {
+std::vector<std::string>& P2PApp::split(const std::string &s, char delim,
+        std::vector<std::string> &elems) {
     std::stringstream ss(s);
     std::string item;
     while (std::getline(ss, item, delim)) {
@@ -301,9 +361,7 @@ std::vector<std::string>& P2PApp::split(const std::string &s, char delim, std::v
     return elems;
 }
 
-
-char* P2PApp::ss_to_charp(std::stringstream& accum)
-{
+char* P2PApp::ss_to_charp(std::stringstream& accum) {
     char * writable;
     writable = new char[accum.str().size() + 1];
     std::string str = accum.str();
@@ -312,7 +370,6 @@ char* P2PApp::ss_to_charp(std::stringstream& accum)
 
     return writable;
 }
-
 
 std::vector<std::string> P2PApp::split(const std::string &s, char delim) {
     std::vector<std::string> elems;

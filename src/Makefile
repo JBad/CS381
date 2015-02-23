@@ -2,7 +2,7 @@
 # OMNeT++/OMNEST Makefile for CS381
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep -I/Users/jessebadash/Downloads/inet/src/linklayer/ieee80211/radio -I/Users/jessebadash/Downloads/inet/src/networklayer/routing/aodv -I/Users/jessebadash/Downloads/inet/src/networklayer/common -I/Users/jessebadash/Downloads/inet/src/networklayer/icmpv6 -I/Users/jessebadash/Downloads/inet/src -I/Users/jessebadash/Downloads/inet/src/world/obstacles -I/Users/jessebadash/Downloads/inet/src/networklayer/xmipv6 -I/Users/jessebadash/Downloads/inet/src/networklayer/contract -I/Users/jessebadash/Downloads/inet/src/networklayer/autorouting/ipv4 -I/Users/jessebadash/Downloads/inet/src/util -I/Users/jessebadash/Downloads/inet/src/transport/contract -I/Users/jessebadash/Downloads/inet/src/linklayer/common -I/Users/jessebadash/Downloads/inet/src/status -I/Users/jessebadash/Downloads/inet/src/linklayer/radio/propagation -I/Users/jessebadash/Downloads/inet/src/linklayer/ieee80211/radio/errormodel -I/Users/jessebadash/Downloads/inet/src/linklayer/radio -I/Users/jessebadash/Downloads/inet/src/util/headerserializers/tcp -I/Users/jessebadash/Downloads/inet/src/networklayer/ipv4 -I/Users/jessebadash/Downloads/inet/src/mobility/contract -I/Users/jessebadash/Downloads/inet/src/util/headerserializers/ipv4 -I/Users/jessebadash/Downloads/inet/src/base -I/Users/jessebadash/Downloads/inet/src/util/headerserializers -I/Users/jessebadash/Downloads/inet/src/world/radio -I/Users/jessebadash/Downloads/inet/src/linklayer/ieee80211/mac -I/Users/jessebadash/Downloads/inet/src/networklayer/ipv6 -I/Users/jessebadash/Downloads/inet/src/transport/sctp -I/Users/jessebadash/Downloads/inet/src/util/headerserializers/udp -I/Users/jessebadash/Downloads/inet/src/networklayer/ipv6tunneling -I/Users/jessebadash/Downloads/inet/src/applications/pingapp -I/Users/jessebadash/Downloads/inet/src/battery/models -I/Users/jessebadash/Downloads/inet/src/util/headerserializers/ipv6 -I/Users/jessebadash/Downloads/inet/src/util/headerserializers/sctp -I/Users/jessebadash/Downloads/inet/src/linklayer/contract -I/Users/jessebadash/Downloads/inet/src/transport/tcp_common -I/Users/jessebadash/Downloads/inet/src/networklayer/arp -I/Users/jessebadash/Downloads/inet/src/transport/udp -L/Users/jessebadash/Downloads/inet/out/$$\(CONFIGNAME\)/src -linet -DINET_IMPORT -KINET_PROJ=/Users/jessebadash/Downloads/inet
+#  opp_makemake -f --deep -I../../inet/src/linklayer/ieee80211/radio -I../../inet/src/networklayer/routing/aodv -I../../inet/src/networklayer/common -I../../inet/src/networklayer/icmpv6 -I../../inet/src -I../../inet/src/world/obstacles -I../../inet/src/networklayer/xmipv6 -I../../inet/src/networklayer/contract -I../../inet/src/networklayer/autorouting/ipv4 -I../../inet/src/util -I../../inet/src/transport/contract -I../../inet/src/linklayer/common -I../../inet/src/status -I../../inet/src/linklayer/radio/propagation -I../../inet/src/linklayer/ieee80211/radio/errormodel -I../../inet/src/linklayer/radio -I../../inet/src/util/headerserializers/tcp -I../../inet/src/networklayer/ipv4 -I../../inet/src/mobility/contract -I../../inet/src/util/headerserializers/ipv4 -I../../inet/src/base -I../../inet/src/util/headerserializers -I../../inet/src/world/radio -I../../inet/src/linklayer/ieee80211/mac -I../../inet/src/networklayer/ipv6 -I../../inet/src/transport/sctp -I../../inet/src/util/headerserializers/udp -I../../inet/src/networklayer/ipv6tunneling -I../../inet/src/applications/pingapp -I../../inet/src/battery/models -I../../inet/src/util/headerserializers/ipv6 -I../../inet/src/util/headerserializers/sctp -I../../inet/src/linklayer/contract -I../../inet/src/transport/tcp_common -I../../inet/src/networklayer/arp -I../../inet/src/transport/udp -L../../inet/out/$$\(CONFIGNAME\)/src -linet -DINET_IMPORT -KINET_PROJ=../../inet
 #
 
 # Name of target to be created (-o option)
@@ -15,50 +15,50 @@ USERIF_LIBS = $(ALL_ENV_LIBS) # that is, $(TKENV_LIBS) $(CMDENV_LIBS)
 
 # C++ include paths (with -I)
 INCLUDE_PATH = \
-    -I$(INET_PROJ)/src/linklayer/ieee80211/radio \
-    -I$(INET_PROJ)/src/networklayer/routing/aodv \
-    -I$(INET_PROJ)/src/networklayer/common \
-    -I$(INET_PROJ)/src/networklayer/icmpv6 \
-    -I$(INET_PROJ)/src \
-    -I$(INET_PROJ)/src/world/obstacles \
-    -I$(INET_PROJ)/src/networklayer/xmipv6 \
-    -I$(INET_PROJ)/src/networklayer/contract \
-    -I$(INET_PROJ)/src/networklayer/autorouting/ipv4 \
-    -I$(INET_PROJ)/src/util \
-    -I$(INET_PROJ)/src/transport/contract \
-    -I$(INET_PROJ)/src/linklayer/common \
-    -I$(INET_PROJ)/src/status \
-    -I$(INET_PROJ)/src/linklayer/radio/propagation \
-    -I$(INET_PROJ)/src/linklayer/ieee80211/radio/errormodel \
-    -I$(INET_PROJ)/src/linklayer/radio \
-    -I$(INET_PROJ)/src/util/headerserializers/tcp \
-    -I$(INET_PROJ)/src/networklayer/ipv4 \
-    -I$(INET_PROJ)/src/mobility/contract \
-    -I$(INET_PROJ)/src/util/headerserializers/ipv4 \
-    -I$(INET_PROJ)/src/base \
-    -I$(INET_PROJ)/src/util/headerserializers \
-    -I$(INET_PROJ)/src/world/radio \
-    -I$(INET_PROJ)/src/linklayer/ieee80211/mac \
-    -I$(INET_PROJ)/src/networklayer/ipv6 \
-    -I$(INET_PROJ)/src/transport/sctp \
-    -I$(INET_PROJ)/src/util/headerserializers/udp \
-    -I$(INET_PROJ)/src/networklayer/ipv6tunneling \
-    -I$(INET_PROJ)/src/applications/pingapp \
-    -I$(INET_PROJ)/src/battery/models \
-    -I$(INET_PROJ)/src/util/headerserializers/ipv6 \
-    -I$(INET_PROJ)/src/util/headerserializers/sctp \
-    -I$(INET_PROJ)/src/linklayer/contract \
-    -I$(INET_PROJ)/src/transport/tcp_common \
-    -I$(INET_PROJ)/src/networklayer/arp \
-    -I$(INET_PROJ)/src/transport/udp \
+    -I../../inet/src/linklayer/ieee80211/radio \
+    -I../../inet/src/networklayer/routing/aodv \
+    -I../../inet/src/networklayer/common \
+    -I../../inet/src/networklayer/icmpv6 \
+    -I../../inet/src \
+    -I../../inet/src/world/obstacles \
+    -I../../inet/src/networklayer/xmipv6 \
+    -I../../inet/src/networklayer/contract \
+    -I../../inet/src/networklayer/autorouting/ipv4 \
+    -I../../inet/src/util \
+    -I../../inet/src/transport/contract \
+    -I../../inet/src/linklayer/common \
+    -I../../inet/src/status \
+    -I../../inet/src/linklayer/radio/propagation \
+    -I../../inet/src/linklayer/ieee80211/radio/errormodel \
+    -I../../inet/src/linklayer/radio \
+    -I../../inet/src/util/headerserializers/tcp \
+    -I../../inet/src/networklayer/ipv4 \
+    -I../../inet/src/mobility/contract \
+    -I../../inet/src/util/headerserializers/ipv4 \
+    -I../../inet/src/base \
+    -I../../inet/src/util/headerserializers \
+    -I../../inet/src/world/radio \
+    -I../../inet/src/linklayer/ieee80211/mac \
+    -I../../inet/src/networklayer/ipv6 \
+    -I../../inet/src/transport/sctp \
+    -I../../inet/src/util/headerserializers/udp \
+    -I../../inet/src/networklayer/ipv6tunneling \
+    -I../../inet/src/applications/pingapp \
+    -I../../inet/src/battery/models \
+    -I../../inet/src/util/headerserializers/ipv6 \
+    -I../../inet/src/util/headerserializers/sctp \
+    -I../../inet/src/linklayer/contract \
+    -I../../inet/src/transport/tcp_common \
+    -I../../inet/src/networklayer/arp \
+    -I../../inet/src/transport/udp \
     -I.
 
 # Additional object and library files to link with
 EXTRA_OBJS =
 
 # Additional libraries (-L, -l options)
-LIBS = -L$(INET_PROJ)/out/$(CONFIGNAME)/src  -linet
-LIBS += -Wl,-rpath,`abspath $(INET_PROJ)/out/$(CONFIGNAME)/src`
+LIBS = -L../../inet/out/$(CONFIGNAME)/src  -linet
+LIBS += -Wl,-rpath,`abspath ../../inet/out/$(CONFIGNAME)/src`
 
 # Output directory
 PROJECT_OUTPUT_DIR = ../out
@@ -73,7 +73,7 @@ MSGFILES = \
     CSAppMsg.msg
 
 # Other makefile variables (-K)
-INET_PROJ=/Users/jessebadash/Downloads/inet
+INET_PROJ=../../inet
 
 #------------------------------------------------------------------------------
 

@@ -13,25 +13,56 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-enum CS_MSG_TYPE {
-    CS_REQUEST = 0;
-    CS_RESPONSE = 1;
+enum BT_MSG_TYPE {
+    Tracker_REQUEST = 0;
+    Tracker_RESPONSE = 1;
+    Peer_INFO_REQUEST = 2;
+    Peer_INFO_RESPONSE = 3;
+    Peer_CHUNK_REQUEST = 4;
+    Peer_CHUNK_RESPONSE = 5;
 };
 
-packet CS_Packet
+packet BT_Packet
 {
-   int     type @enum(CS_MSG_TYPE);  // our message type
+   int     type @enum(BT_MSG_TYPE);  // our message type
 };
 
-packet CS_Req extends CS_Packet
+packet Tracker_Req extends BT_Packet
 {
     string	id;		        // announce the requestor's ID
-    string file;        // request for a file
 };
 
-packet CS_Resp extends CS_Packet
+packet Tracker_Resp extends BT_Packet
 {
     string  id;			// ID of the responder
-    unsigned long size;	// size of the data	
-    char data [];    // contents of the file
+    string peers[];
+    int numPeers;
 };
+
+packet Peer_Packet
+{
+    int     type @enum(BT_MSG_TYPE);
+};
+
+packet Peer_InfoReq extends BT_Packet
+{
+};
+
+packet Peer_InfoResp extends BT_Packet
+{
+	int chunks[];
+	int size;   
+};
+
+packet Peer_ChunkReq extends BT_Packet
+{
+	int chunk;   
+};
+
+packet Peer_ChunkResp extends BT_Packet
+{
+    char data[];
+    int size;   
+};
+
+    
