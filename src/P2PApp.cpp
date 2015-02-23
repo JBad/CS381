@@ -212,33 +212,43 @@ void P2PApp::setStatusString(const char *s) {
     }
 }
 
-virtual char * P2PApp::makePeerResponse(char * bytes){
+char * P2PApp::makePeerResponse(char * bytes){
     int value = atoi(bytes);
     if(value == -1){
-        string chunks = "";
         stringstream chunks;
-        chunks << 'i';
+        chunks << "i";
         for(int i = 0; i < 20; ++i){
             if(chunks_[i] == true){
                 chunks << i;
                 chunks << ";";
             }
         }
-        return chunks.str().c_str();
+        /*
+        char * writable = new char[chunks.size() + 1];
+        std::copy(chunks.begin(), chunks.end(), writable);
+        writable[chunks.size()] = '\0'; // don't forget the terminating 0
+
+        return writeable;*/
+
+        return P2PApp::ss_to_charp(chunks);
+        //return chunks.str().c_str();
     }
     else{
         return data[value];
     }
 }
 
-virtual char * P2PApp::makeRequestForPeerAllChunks(){
+char * P2PApp::makeRequestForPeerAllChunks(){
+    /*
+
     value = -1;
     stringstream chunks;
     chunks << value;
-    return chunks.str().c_str();
+    return chunks.str().c_str();*/
+    return NULL;
 }
 
-virtual bool P2PApp::fileComplete(){
+bool P2PApp::fileComplete(){
     for(int i = 0; i < 20; ++i){
         if(!chunks_[i]){
             return false;
@@ -247,34 +257,34 @@ virtual bool P2PApp::fileComplete(){
     return true;
 }
 
-virtual void P2PApp::handleResponseFromTracker(char * list){
-    vector<string> newPeers = split(String str(list), ";");
+void P2PApp::handleResponseFromTracker(char * list){
+    vector<string> newPeers = split(std::string str(list), ";");
     for(int i = 0; i < newPeers.size(); ++i){
         peers_.insert(newPeers[i]);
         pendingRequest_.insert (std::pair<string,int>(newPeers[i],-1));
     }
 }
 
-virtual void P2PApp::handleResponsefromPeerChunkList(char * list, char * peer) {
+void P2PApp::handleResponsefromPeerChunkList(char * list, char * peer) {
     string peerName(peer);
-    vector<string> chunks = split(String str(list), ";");
-    for(int i = 0; i < chunks.size(); ++t){
+    vector<string> chunks = split(std::string str(list), ";");
+    for(int i = 0; i < chunks.size(); ++i){
         int value = atoi(chunks[i].c_str);
         peerChunks_[peerName].insert(value);
     }
 }
 
-virtual void P2PApp::handleResponsefromPeerSingleChunk(char * data, char * peer) {
+void P2PApp::handleResponsefromPeerSingleChunk(char * data, char * peer) {
     string peerName(peer);
-    for(int i = 0; i < chunks.size(); ++t){
+    for(int it = 0; it < chunks.size(); ++it){
         int value = pendingChunks_[peerName];
         pendingChunks_[peerName] = -1;
-        data[value] = data;
+        data_[value] = data;
         chunks_[value] = true;
     }
 }
 
-virtual char * P2PApp::makeRequestFor(char * peer) {
+char * P2PApp::makeRequestFor(char * peer) {
     string peerName(peer);
     set<int> peerChunk = map[peerName];
     for(set<int>::iterator i = peerChunk.begin(); i != peerChunk.end(); ++i){
@@ -282,14 +292,16 @@ virtual char * P2PApp::makeRequestFor(char * peer) {
             stringstream chunks;
             chunks << value;
             pendingChunks[peerName] = value;
-            return chunks.str().c_str();
+            //return chunks.str().c_str();
+            return NULL;
         }
     }
-    return null;
+    return NULL;
 }
 
 
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
+
+std::vector<std::string>& P2PApp::split(const std::string &s, char delim, std::vector<std::string> &elems) {
     std::stringstream ss(s);
     std::string item;
     while (std::getline(ss, item, delim)) {
@@ -299,7 +311,17 @@ std::vector<std::string> &split(const std::string &s, char delim, std::vector<st
 }
 
 
-std::vector<std::string> split(const std::string &s, char delim) {
+char* P2PApp::ss_to_charp(std::stringstream& accum)
+{
+    char * writable = new char[accum.size() + 1];
+    std::copy(accum.begin(), accum.end(), writable);
+    writable[accum.size()] = '\0'; // don't forget the terminating 0
+
+    return writeable;
+}
+
+
+std::vector<std::string> P2PApp::split(const std::string &s, char delim) {
     std::vector<std::string> elems;
     split(s, delim, elems);
     return elems;

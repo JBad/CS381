@@ -11,6 +11,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 
 using namespace std;
 
@@ -49,6 +50,12 @@ public:
   virtual void sendRequest (int connId, const char* id, string fname);
 
   virtual void finish (void);
+
+  static char* ss_to_charp(std::stringstream& accum);
+
+  static std::vector<std::string> split(const std::string &s, char delim);
+
+  std::vector<std::string>& split(const std::string &s, char delim, std::vector<std::string> &elems);
 
 protected:
 
