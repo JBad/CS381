@@ -383,10 +383,10 @@ cMessage * P2PApp::makeRequestFor(string peer) {
 
             Peer_ChunkReq* req = this->makePeerChunkRequest(peer, *i);
 
-       //     return req;
+            return req;
         }
     }
- //   return NULL;
+    return NULL;
 }
 
 //void P2PApp::sendRequest()
