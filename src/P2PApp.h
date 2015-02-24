@@ -132,6 +132,7 @@ private:
   vector<bool> activeChunks_;
   vector<char*> data_;
   vector<int> dataSize_;
+  TCPSocketMap socketMap_; // maps of sockets we maintain
 };
 
 struct msg{
