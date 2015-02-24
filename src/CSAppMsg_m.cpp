@@ -544,7 +544,6 @@ Tracker_Resp::Tracker_Resp(const char *name, int kind) : ::BT_Packet(name,kind)
     this->id_var = 0;
     peers_arraysize = 0;
     this->peers_var = 0;
-    this->numPeers_var = 0;
 }
 
 Tracker_Resp::Tracker_Resp(const Tracker_Resp& other) : ::BT_Packet(other)
@@ -575,7 +574,6 @@ void Tracker_Resp::copy(const Tracker_Resp& other)
     peers_arraysize = other.peers_arraysize;
     for (unsigned int i=0; i<peers_arraysize; i++)
         this->peers_var[i] = other.peers_var[i];
-    this->numPeers_var = other.numPeers_var;
 }
 
 void Tracker_Resp::parsimPack(cCommBuffer *b)
@@ -584,7 +582,6 @@ void Tracker_Resp::parsimPack(cCommBuffer *b)
     doPacking(b,this->id_var);
     b->pack(peers_arraysize);
     doPacking(b,this->peers_var,peers_arraysize);
-    doPacking(b,this->numPeers_var);
 }
 
 void Tracker_Resp::parsimUnpack(cCommBuffer *b)
@@ -599,7 +596,6 @@ void Tracker_Resp::parsimUnpack(cCommBuffer *b)
         this->peers_var = new opp_string[peers_arraysize];
         doUnpacking(b,this->peers_var,peers_arraysize);
     }
-    doUnpacking(b,this->numPeers_var);
 }
 
 const char * Tracker_Resp::getId() const
@@ -640,16 +636,6 @@ void Tracker_Resp::setPeers(unsigned int k, const char * peers)
 {
     if (k>=peers_arraysize) throw cRuntimeError("Array of size %d indexed by %d", peers_arraysize, k);
     this->peers_var[k] = peers;
-}
-
-int Tracker_Resp::getNumPeers() const
-{
-    return numPeers_var;
-}
-
-void Tracker_Resp::setNumPeers(int numPeers)
-{
-    this->numPeers_var = numPeers;
 }
 
 class Tracker_RespDescriptor : public cClassDescriptor
@@ -699,7 +685,7 @@ const char *Tracker_RespDescriptor::getProperty(const char *propertyname) const
 int Tracker_RespDescriptor::getFieldCount(void *object) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
-    return basedesc ? 3+basedesc->getFieldCount(object) : 3;
+    return basedesc ? 2+basedesc->getFieldCount(object) : 2;
 }
 
 unsigned int Tracker_RespDescriptor::getFieldTypeFlags(void *object, int field) const
@@ -713,9 +699,8 @@ unsigned int Tracker_RespDescriptor::getFieldTypeFlags(void *object, int field) 
     static unsigned int fieldTypeFlags[] = {
         FD_ISEDITABLE,
         FD_ISARRAY | FD_ISEDITABLE,
-        FD_ISEDITABLE,
     };
-    return (field>=0 && field<3) ? fieldTypeFlags[field] : 0;
+    return (field>=0 && field<2) ? fieldTypeFlags[field] : 0;
 }
 
 const char *Tracker_RespDescriptor::getFieldName(void *object, int field) const
@@ -729,9 +714,8 @@ const char *Tracker_RespDescriptor::getFieldName(void *object, int field) const
     static const char *fieldNames[] = {
         "id",
         "peers",
-        "numPeers",
     };
-    return (field>=0 && field<3) ? fieldNames[field] : NULL;
+    return (field>=0 && field<2) ? fieldNames[field] : NULL;
 }
 
 int Tracker_RespDescriptor::findField(void *object, const char *fieldName) const
@@ -740,7 +724,6 @@ int Tracker_RespDescriptor::findField(void *object, const char *fieldName) const
     int base = basedesc ? basedesc->getFieldCount(object) : 0;
     if (fieldName[0]=='i' && strcmp(fieldName, "id")==0) return base+0;
     if (fieldName[0]=='p' && strcmp(fieldName, "peers")==0) return base+1;
-    if (fieldName[0]=='n' && strcmp(fieldName, "numPeers")==0) return base+2;
     return basedesc ? basedesc->findField(object, fieldName) : -1;
 }
 
@@ -755,9 +738,8 @@ const char *Tracker_RespDescriptor::getFieldTypeString(void *object, int field) 
     static const char *fieldTypeStrings[] = {
         "string",
         "string",
-        "int",
     };
-    return (field>=0 && field<3) ? fieldTypeStrings[field] : NULL;
+    return (field>=0 && field<2) ? fieldTypeStrings[field] : NULL;
 }
 
 const char *Tracker_RespDescriptor::getFieldProperty(void *object, int field, const char *propertyname) const
@@ -800,7 +782,6 @@ std::string Tracker_RespDescriptor::getFieldAsString(void *object, int field, in
     switch (field) {
         case 0: return oppstring2string(pp->getId());
         case 1: return oppstring2string(pp->getPeers(i));
-        case 2: return long2string(pp->getNumPeers());
         default: return "";
     }
 }
@@ -817,7 +798,6 @@ bool Tracker_RespDescriptor::setFieldAsString(void *object, int field, int i, co
     switch (field) {
         case 0: pp->setId((value)); return true;
         case 1: pp->setPeers(i,(value)); return true;
-        case 2: pp->setNumPeers(string2long(value)); return true;
         default: return false;
     }
 }
@@ -1091,6 +1071,7 @@ Register_Class(Peer_InfoReq);
 
 Peer_InfoReq::Peer_InfoReq(const char *name, int kind) : ::BT_Packet(name,kind)
 {
+    this->id_var = 0;
 }
 
 Peer_InfoReq::Peer_InfoReq(const Peer_InfoReq& other) : ::BT_Packet(other)
@@ -1112,16 +1093,29 @@ Peer_InfoReq& Peer_InfoReq::operator=(const Peer_InfoReq& other)
 
 void Peer_InfoReq::copy(const Peer_InfoReq& other)
 {
+    this->id_var = other.id_var;
 }
 
 void Peer_InfoReq::parsimPack(cCommBuffer *b)
 {
     ::BT_Packet::parsimPack(b);
+    doPacking(b,this->id_var);
 }
 
 void Peer_InfoReq::parsimUnpack(cCommBuffer *b)
 {
     ::BT_Packet::parsimUnpack(b);
+    doUnpacking(b,this->id_var);
+}
+
+const char * Peer_InfoReq::getId() const
+{
+    return id_var.c_str();
+}
+
+void Peer_InfoReq::setId(const char * id)
+{
+    this->id_var = id;
 }
 
 class Peer_InfoReqDescriptor : public cClassDescriptor
@@ -1171,7 +1165,7 @@ const char *Peer_InfoReqDescriptor::getProperty(const char *propertyname) const
 int Peer_InfoReqDescriptor::getFieldCount(void *object) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
-    return basedesc ? 0+basedesc->getFieldCount(object) : 0;
+    return basedesc ? 1+basedesc->getFieldCount(object) : 1;
 }
 
 unsigned int Peer_InfoReqDescriptor::getFieldTypeFlags(void *object, int field) const
@@ -1182,7 +1176,10 @@ unsigned int Peer_InfoReqDescriptor::getFieldTypeFlags(void *object, int field) 
             return basedesc->getFieldTypeFlags(object, field);
         field -= basedesc->getFieldCount(object);
     }
-    return 0;
+    static unsigned int fieldTypeFlags[] = {
+        FD_ISEDITABLE,
+    };
+    return (field>=0 && field<1) ? fieldTypeFlags[field] : 0;
 }
 
 const char *Peer_InfoReqDescriptor::getFieldName(void *object, int field) const
@@ -1193,12 +1190,17 @@ const char *Peer_InfoReqDescriptor::getFieldName(void *object, int field) const
             return basedesc->getFieldName(object, field);
         field -= basedesc->getFieldCount(object);
     }
-    return NULL;
+    static const char *fieldNames[] = {
+        "id",
+    };
+    return (field>=0 && field<1) ? fieldNames[field] : NULL;
 }
 
 int Peer_InfoReqDescriptor::findField(void *object, const char *fieldName) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
+    int base = basedesc ? basedesc->getFieldCount(object) : 0;
+    if (fieldName[0]=='i' && strcmp(fieldName, "id")==0) return base+0;
     return basedesc ? basedesc->findField(object, fieldName) : -1;
 }
 
@@ -1210,7 +1212,10 @@ const char *Peer_InfoReqDescriptor::getFieldTypeString(void *object, int field) 
             return basedesc->getFieldTypeString(object, field);
         field -= basedesc->getFieldCount(object);
     }
-    return NULL;
+    static const char *fieldTypeStrings[] = {
+        "string",
+    };
+    return (field>=0 && field<1) ? fieldTypeStrings[field] : NULL;
 }
 
 const char *Peer_InfoReqDescriptor::getFieldProperty(void *object, int field, const char *propertyname) const
@@ -1250,6 +1255,7 @@ std::string Peer_InfoReqDescriptor::getFieldAsString(void *object, int field, in
     }
     Peer_InfoReq *pp = (Peer_InfoReq *)object; (void)pp;
     switch (field) {
+        case 0: return oppstring2string(pp->getId());
         default: return "";
     }
 }
@@ -1264,6 +1270,7 @@ bool Peer_InfoReqDescriptor::setFieldAsString(void *object, int field, int i, co
     }
     Peer_InfoReq *pp = (Peer_InfoReq *)object; (void)pp;
     switch (field) {
+        case 0: pp->setId((value)); return true;
         default: return false;
     }
 }
@@ -1276,7 +1283,9 @@ const char *Peer_InfoReqDescriptor::getFieldStructName(void *object, int field) 
             return basedesc->getFieldStructName(object, field);
         field -= basedesc->getFieldCount(object);
     }
-    return NULL;
+    switch (field) {
+        default: return NULL;
+    };
 }
 
 void *Peer_InfoReqDescriptor::getFieldStructPointer(void *object, int field, int i) const
@@ -1297,9 +1306,9 @@ Register_Class(Peer_InfoResp);
 
 Peer_InfoResp::Peer_InfoResp(const char *name, int kind) : ::BT_Packet(name,kind)
 {
+    this->id_var = 0;
     chunks_arraysize = 0;
     this->chunks_var = 0;
-    this->size_var = 0;
 }
 
 Peer_InfoResp::Peer_InfoResp(const Peer_InfoResp& other) : ::BT_Packet(other)
@@ -1324,25 +1333,26 @@ Peer_InfoResp& Peer_InfoResp::operator=(const Peer_InfoResp& other)
 
 void Peer_InfoResp::copy(const Peer_InfoResp& other)
 {
+    this->id_var = other.id_var;
     delete [] this->chunks_var;
     this->chunks_var = (other.chunks_arraysize==0) ? NULL : new int[other.chunks_arraysize];
     chunks_arraysize = other.chunks_arraysize;
     for (unsigned int i=0; i<chunks_arraysize; i++)
         this->chunks_var[i] = other.chunks_var[i];
-    this->size_var = other.size_var;
 }
 
 void Peer_InfoResp::parsimPack(cCommBuffer *b)
 {
     ::BT_Packet::parsimPack(b);
+    doPacking(b,this->id_var);
     b->pack(chunks_arraysize);
     doPacking(b,this->chunks_var,chunks_arraysize);
-    doPacking(b,this->size_var);
 }
 
 void Peer_InfoResp::parsimUnpack(cCommBuffer *b)
 {
     ::BT_Packet::parsimUnpack(b);
+    doUnpacking(b,this->id_var);
     delete [] this->chunks_var;
     b->unpack(chunks_arraysize);
     if (chunks_arraysize==0) {
@@ -1351,7 +1361,16 @@ void Peer_InfoResp::parsimUnpack(cCommBuffer *b)
         this->chunks_var = new int[chunks_arraysize];
         doUnpacking(b,this->chunks_var,chunks_arraysize);
     }
-    doUnpacking(b,this->size_var);
+}
+
+const char * Peer_InfoResp::getId() const
+{
+    return id_var.c_str();
+}
+
+void Peer_InfoResp::setId(const char * id)
+{
+    this->id_var = id;
 }
 
 void Peer_InfoResp::setChunksArraySize(unsigned int size)
@@ -1382,16 +1401,6 @@ void Peer_InfoResp::setChunks(unsigned int k, int chunks)
 {
     if (k>=chunks_arraysize) throw cRuntimeError("Array of size %d indexed by %d", chunks_arraysize, k);
     this->chunks_var[k] = chunks;
-}
-
-int Peer_InfoResp::getSize() const
-{
-    return size_var;
-}
-
-void Peer_InfoResp::setSize(int size)
-{
-    this->size_var = size;
 }
 
 class Peer_InfoRespDescriptor : public cClassDescriptor
@@ -1453,8 +1462,8 @@ unsigned int Peer_InfoRespDescriptor::getFieldTypeFlags(void *object, int field)
         field -= basedesc->getFieldCount(object);
     }
     static unsigned int fieldTypeFlags[] = {
-        FD_ISARRAY | FD_ISEDITABLE,
         FD_ISEDITABLE,
+        FD_ISARRAY | FD_ISEDITABLE,
     };
     return (field>=0 && field<2) ? fieldTypeFlags[field] : 0;
 }
@@ -1468,8 +1477,8 @@ const char *Peer_InfoRespDescriptor::getFieldName(void *object, int field) const
         field -= basedesc->getFieldCount(object);
     }
     static const char *fieldNames[] = {
+        "id",
         "chunks",
-        "size",
     };
     return (field>=0 && field<2) ? fieldNames[field] : NULL;
 }
@@ -1478,8 +1487,8 @@ int Peer_InfoRespDescriptor::findField(void *object, const char *fieldName) cons
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     int base = basedesc ? basedesc->getFieldCount(object) : 0;
-    if (fieldName[0]=='c' && strcmp(fieldName, "chunks")==0) return base+0;
-    if (fieldName[0]=='s' && strcmp(fieldName, "size")==0) return base+1;
+    if (fieldName[0]=='i' && strcmp(fieldName, "id")==0) return base+0;
+    if (fieldName[0]=='c' && strcmp(fieldName, "chunks")==0) return base+1;
     return basedesc ? basedesc->findField(object, fieldName) : -1;
 }
 
@@ -1492,7 +1501,7 @@ const char *Peer_InfoRespDescriptor::getFieldTypeString(void *object, int field)
         field -= basedesc->getFieldCount(object);
     }
     static const char *fieldTypeStrings[] = {
-        "int",
+        "string",
         "int",
     };
     return (field>=0 && field<2) ? fieldTypeStrings[field] : NULL;
@@ -1521,7 +1530,7 @@ int Peer_InfoRespDescriptor::getArraySize(void *object, int field) const
     }
     Peer_InfoResp *pp = (Peer_InfoResp *)object; (void)pp;
     switch (field) {
-        case 0: return pp->getChunksArraySize();
+        case 1: return pp->getChunksArraySize();
         default: return 0;
     }
 }
@@ -1536,8 +1545,8 @@ std::string Peer_InfoRespDescriptor::getFieldAsString(void *object, int field, i
     }
     Peer_InfoResp *pp = (Peer_InfoResp *)object; (void)pp;
     switch (field) {
-        case 0: return long2string(pp->getChunks(i));
-        case 1: return long2string(pp->getSize());
+        case 0: return oppstring2string(pp->getId());
+        case 1: return long2string(pp->getChunks(i));
         default: return "";
     }
 }
@@ -1552,8 +1561,8 @@ bool Peer_InfoRespDescriptor::setFieldAsString(void *object, int field, int i, c
     }
     Peer_InfoResp *pp = (Peer_InfoResp *)object; (void)pp;
     switch (field) {
-        case 0: pp->setChunks(i,string2long(value)); return true;
-        case 1: pp->setSize(string2long(value)); return true;
+        case 0: pp->setId((value)); return true;
+        case 1: pp->setChunks(i,string2long(value)); return true;
         default: return false;
     }
 }
@@ -1589,6 +1598,7 @@ Register_Class(Peer_ChunkReq);
 
 Peer_ChunkReq::Peer_ChunkReq(const char *name, int kind) : ::BT_Packet(name,kind)
 {
+    this->id_var = 0;
     this->chunk_var = 0;
 }
 
@@ -1611,19 +1621,32 @@ Peer_ChunkReq& Peer_ChunkReq::operator=(const Peer_ChunkReq& other)
 
 void Peer_ChunkReq::copy(const Peer_ChunkReq& other)
 {
+    this->id_var = other.id_var;
     this->chunk_var = other.chunk_var;
 }
 
 void Peer_ChunkReq::parsimPack(cCommBuffer *b)
 {
     ::BT_Packet::parsimPack(b);
+    doPacking(b,this->id_var);
     doPacking(b,this->chunk_var);
 }
 
 void Peer_ChunkReq::parsimUnpack(cCommBuffer *b)
 {
     ::BT_Packet::parsimUnpack(b);
+    doUnpacking(b,this->id_var);
     doUnpacking(b,this->chunk_var);
+}
+
+const char * Peer_ChunkReq::getId() const
+{
+    return id_var.c_str();
+}
+
+void Peer_ChunkReq::setId(const char * id)
+{
+    this->id_var = id;
 }
 
 int Peer_ChunkReq::getChunk() const
@@ -1683,7 +1706,7 @@ const char *Peer_ChunkReqDescriptor::getProperty(const char *propertyname) const
 int Peer_ChunkReqDescriptor::getFieldCount(void *object) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
-    return basedesc ? 1+basedesc->getFieldCount(object) : 1;
+    return basedesc ? 2+basedesc->getFieldCount(object) : 2;
 }
 
 unsigned int Peer_ChunkReqDescriptor::getFieldTypeFlags(void *object, int field) const
@@ -1696,8 +1719,9 @@ unsigned int Peer_ChunkReqDescriptor::getFieldTypeFlags(void *object, int field)
     }
     static unsigned int fieldTypeFlags[] = {
         FD_ISEDITABLE,
+        FD_ISEDITABLE,
     };
-    return (field>=0 && field<1) ? fieldTypeFlags[field] : 0;
+    return (field>=0 && field<2) ? fieldTypeFlags[field] : 0;
 }
 
 const char *Peer_ChunkReqDescriptor::getFieldName(void *object, int field) const
@@ -1709,16 +1733,18 @@ const char *Peer_ChunkReqDescriptor::getFieldName(void *object, int field) const
         field -= basedesc->getFieldCount(object);
     }
     static const char *fieldNames[] = {
+        "id",
         "chunk",
     };
-    return (field>=0 && field<1) ? fieldNames[field] : NULL;
+    return (field>=0 && field<2) ? fieldNames[field] : NULL;
 }
 
 int Peer_ChunkReqDescriptor::findField(void *object, const char *fieldName) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     int base = basedesc ? basedesc->getFieldCount(object) : 0;
-    if (fieldName[0]=='c' && strcmp(fieldName, "chunk")==0) return base+0;
+    if (fieldName[0]=='i' && strcmp(fieldName, "id")==0) return base+0;
+    if (fieldName[0]=='c' && strcmp(fieldName, "chunk")==0) return base+1;
     return basedesc ? basedesc->findField(object, fieldName) : -1;
 }
 
@@ -1731,9 +1757,10 @@ const char *Peer_ChunkReqDescriptor::getFieldTypeString(void *object, int field)
         field -= basedesc->getFieldCount(object);
     }
     static const char *fieldTypeStrings[] = {
+        "string",
         "int",
     };
-    return (field>=0 && field<1) ? fieldTypeStrings[field] : NULL;
+    return (field>=0 && field<2) ? fieldTypeStrings[field] : NULL;
 }
 
 const char *Peer_ChunkReqDescriptor::getFieldProperty(void *object, int field, const char *propertyname) const
@@ -1773,7 +1800,8 @@ std::string Peer_ChunkReqDescriptor::getFieldAsString(void *object, int field, i
     }
     Peer_ChunkReq *pp = (Peer_ChunkReq *)object; (void)pp;
     switch (field) {
-        case 0: return long2string(pp->getChunk());
+        case 0: return oppstring2string(pp->getId());
+        case 1: return long2string(pp->getChunk());
         default: return "";
     }
 }
@@ -1788,7 +1816,8 @@ bool Peer_ChunkReqDescriptor::setFieldAsString(void *object, int field, int i, c
     }
     Peer_ChunkReq *pp = (Peer_ChunkReq *)object; (void)pp;
     switch (field) {
-        case 0: pp->setChunk(string2long(value)); return true;
+        case 0: pp->setId((value)); return true;
+        case 1: pp->setChunk(string2long(value)); return true;
         default: return false;
     }
 }
@@ -1824,9 +1853,9 @@ Register_Class(Peer_ChunkResp);
 
 Peer_ChunkResp::Peer_ChunkResp(const char *name, int kind) : ::BT_Packet(name,kind)
 {
+    this->id_var = 0;
     data_arraysize = 0;
     this->data_var = 0;
-    this->size_var = 0;
 }
 
 Peer_ChunkResp::Peer_ChunkResp(const Peer_ChunkResp& other) : ::BT_Packet(other)
@@ -1851,25 +1880,26 @@ Peer_ChunkResp& Peer_ChunkResp::operator=(const Peer_ChunkResp& other)
 
 void Peer_ChunkResp::copy(const Peer_ChunkResp& other)
 {
+    this->id_var = other.id_var;
     delete [] this->data_var;
     this->data_var = (other.data_arraysize==0) ? NULL : new char[other.data_arraysize];
     data_arraysize = other.data_arraysize;
     for (unsigned int i=0; i<data_arraysize; i++)
         this->data_var[i] = other.data_var[i];
-    this->size_var = other.size_var;
 }
 
 void Peer_ChunkResp::parsimPack(cCommBuffer *b)
 {
     ::BT_Packet::parsimPack(b);
+    doPacking(b,this->id_var);
     b->pack(data_arraysize);
     doPacking(b,this->data_var,data_arraysize);
-    doPacking(b,this->size_var);
 }
 
 void Peer_ChunkResp::parsimUnpack(cCommBuffer *b)
 {
     ::BT_Packet::parsimUnpack(b);
+    doUnpacking(b,this->id_var);
     delete [] this->data_var;
     b->unpack(data_arraysize);
     if (data_arraysize==0) {
@@ -1878,7 +1908,16 @@ void Peer_ChunkResp::parsimUnpack(cCommBuffer *b)
         this->data_var = new char[data_arraysize];
         doUnpacking(b,this->data_var,data_arraysize);
     }
-    doUnpacking(b,this->size_var);
+}
+
+const char * Peer_ChunkResp::getId() const
+{
+    return id_var.c_str();
+}
+
+void Peer_ChunkResp::setId(const char * id)
+{
+    this->id_var = id;
 }
 
 void Peer_ChunkResp::setDataArraySize(unsigned int size)
@@ -1909,16 +1948,6 @@ void Peer_ChunkResp::setData(unsigned int k, char data)
 {
     if (k>=data_arraysize) throw cRuntimeError("Array of size %d indexed by %d", data_arraysize, k);
     this->data_var[k] = data;
-}
-
-int Peer_ChunkResp::getSize() const
-{
-    return size_var;
-}
-
-void Peer_ChunkResp::setSize(int size)
-{
-    this->size_var = size;
 }
 
 class Peer_ChunkRespDescriptor : public cClassDescriptor
@@ -1980,8 +2009,8 @@ unsigned int Peer_ChunkRespDescriptor::getFieldTypeFlags(void *object, int field
         field -= basedesc->getFieldCount(object);
     }
     static unsigned int fieldTypeFlags[] = {
-        FD_ISARRAY | FD_ISEDITABLE,
         FD_ISEDITABLE,
+        FD_ISARRAY | FD_ISEDITABLE,
     };
     return (field>=0 && field<2) ? fieldTypeFlags[field] : 0;
 }
@@ -1995,8 +2024,8 @@ const char *Peer_ChunkRespDescriptor::getFieldName(void *object, int field) cons
         field -= basedesc->getFieldCount(object);
     }
     static const char *fieldNames[] = {
+        "id",
         "data",
-        "size",
     };
     return (field>=0 && field<2) ? fieldNames[field] : NULL;
 }
@@ -2005,8 +2034,8 @@ int Peer_ChunkRespDescriptor::findField(void *object, const char *fieldName) con
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     int base = basedesc ? basedesc->getFieldCount(object) : 0;
-    if (fieldName[0]=='d' && strcmp(fieldName, "data")==0) return base+0;
-    if (fieldName[0]=='s' && strcmp(fieldName, "size")==0) return base+1;
+    if (fieldName[0]=='i' && strcmp(fieldName, "id")==0) return base+0;
+    if (fieldName[0]=='d' && strcmp(fieldName, "data")==0) return base+1;
     return basedesc ? basedesc->findField(object, fieldName) : -1;
 }
 
@@ -2019,8 +2048,8 @@ const char *Peer_ChunkRespDescriptor::getFieldTypeString(void *object, int field
         field -= basedesc->getFieldCount(object);
     }
     static const char *fieldTypeStrings[] = {
+        "string",
         "char",
-        "int",
     };
     return (field>=0 && field<2) ? fieldTypeStrings[field] : NULL;
 }
@@ -2048,7 +2077,7 @@ int Peer_ChunkRespDescriptor::getArraySize(void *object, int field) const
     }
     Peer_ChunkResp *pp = (Peer_ChunkResp *)object; (void)pp;
     switch (field) {
-        case 0: return pp->getDataArraySize();
+        case 1: return pp->getDataArraySize();
         default: return 0;
     }
 }
@@ -2063,8 +2092,8 @@ std::string Peer_ChunkRespDescriptor::getFieldAsString(void *object, int field, 
     }
     Peer_ChunkResp *pp = (Peer_ChunkResp *)object; (void)pp;
     switch (field) {
-        case 0: return long2string(pp->getData(i));
-        case 1: return long2string(pp->getSize());
+        case 0: return oppstring2string(pp->getId());
+        case 1: return long2string(pp->getData(i));
         default: return "";
     }
 }
@@ -2079,8 +2108,8 @@ bool Peer_ChunkRespDescriptor::setFieldAsString(void *object, int field, int i, 
     }
     Peer_ChunkResp *pp = (Peer_ChunkResp *)object; (void)pp;
     switch (field) {
-        case 0: pp->setData(i,string2long(value)); return true;
-        case 1: pp->setSize(string2long(value)); return true;
+        case 0: pp->setId((value)); return true;
+        case 1: pp->setData(i,string2long(value)); return true;
         default: return false;
     }
 }

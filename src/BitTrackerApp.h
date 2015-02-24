@@ -45,7 +45,7 @@ public:
 
   virtual void socketFailure (int connId, void *yourPtr, int code);
 
-  virtual void sendResponse (int connId, const char *id, char* data, unsigned long size);
+  virtual void sendResponse (int connId, const char *id, char* data);
 
   virtual void finish (void);
 
@@ -59,7 +59,7 @@ public:
    * in the set of peers then we will add them to the set and respond with a serialized version of the
    * set of peers
    */
-  virtual char * newPeerApp(char * name);
+  virtual void newPeerApp(std::string name);
 
 
 private:
@@ -75,7 +75,6 @@ private:
   int connectPort_;        // ports of the peer we connect to
 
 
-  map<string, vector<int> > PeerChunkDB;
   set<string> peers_; // set of all peers
 };
 

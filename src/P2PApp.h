@@ -11,6 +11,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <set>
 #include <algorithm>
 
 using namespace std;
@@ -18,6 +19,7 @@ using namespace std;
 #include "INETDefs.h"       // this contains imp definitions from the INET
 #include "TCPSocket.h"      // this is needed for sockets
 #include "TCPSocketMap.h"
+#include "CSAppMsg_m.h"
 
 #include <omnetpp.h>
 
@@ -53,10 +55,6 @@ public:
 
   static char* ss_to_charp(std::stringstream& accum);
 
-  static std::vector<std::string> split(const std::string &s, char delim);
-
-  static std::vector<std::string>& split(const std::string &s, char delim, std::vector<std::string> &elems);
-
 protected:
 
   virtual void    socketDataArrived (int connId, void *yourPtr, cPacket *msg, bool urgent);
@@ -82,12 +80,13 @@ protected:
    * for -1 -> list of the chunks it currently has in this case return_value[0] = 'i'
    * for not -1 it returns that chunk in this case
    */
-  virtual char * makePeerResponse(char * bytes);
+  virtual Peer_InfoResp* makePeerListResponse(void);
 
-  /**
-   * just returns a char * with -1 in it.
-   */
-  virtual char * makeRequestForPeerAllChunks();
+  virtual Peer_ChunkResp* makePeerChunkResponse(Peer_ChunkReq* req);
+
+  virtual Peer_InfoReq* makePeerListRequest(string peer);
+
+  virtual Peer_ChunkReq* makePeerChunkRequest(string peer, int chunk);
 
   /**
    * File Complete? returns if we have all of the chunks;
@@ -97,22 +96,22 @@ protected:
   /**
    * handleResponseFromTracker, this is just placing the new peers into the set of current peers
    */
-  virtual void handleResponseFromTracker(char * list);
+  virtual void handleResponseFromTracker(Tracker_Resp* resp);
 
   /**
    * Given the peer and a list of the chunks that that peer has, we store it, so now we know who
    * to ask for what piece
    */
-  virtual void handleResponsefromPeerChunkList(char * list, char * peer);
+  virtual void handleResponsefromPeerChunkList(Peer_InfoResp* resp);
 
   /**
    * Looks for peer in the list of peer and see what chunk this peer has, that we do not have
    * and sends a request for that chunk, if there is nothing new it returns null, CHECK this!
    */
-  virtual char * makeRequestFor(char * peer);
+  virtual void makeRequestFor(string peer);
 
 
-  virtual void handleResponsefromPeerSingleChunk(char * data, char * peer);
+  virtual void handleResponsefromPeerSingleChunk(Peer_ChunkResp* resp);
 
 
 private:
@@ -126,11 +125,13 @@ private:
   string connectAddress_;  // address of our peers
   int connectPort_;        // ports of the peer we connect to
 
-  set<string>peers_;
-  map<string, set<int>>peerChunks_;
+  set<string> peers_;
+  map<string, set<int>> peerChunks_;
   map<string, int> pendingRequests_;
-  vector<bool>chunks_;
+  vector<bool> chunks_;
+  vector<bool> activeChunks_;
   vector<char*> data_;
+  vector<int> dataSize_;
 };
 
 struct msg{

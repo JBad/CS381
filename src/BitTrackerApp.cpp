@@ -1,7 +1,6 @@
 // Implementation of the module.
 // Adapted from the tictoc tutorial
 
-
 #include "CSAppMsg_m.h"
 #include "BitTrackerApp.h"
 
@@ -10,116 +9,106 @@
 // the module class is now registered with omnet++ and tells it to look for
 // a corresponding NED file for a simple module definition of the same name.
 // ** Never put this inside a header file **
-Define_Module (BitTrackerApp);
+Define_Module(BitTrackerApp);
 
 // ******* Peer SimpleModule *******
 
 // constructor
-BitTrackerApp::BitTrackerApp (void)
-  : cSimpleModule ()
-{
+BitTrackerApp::BitTrackerApp(void) :
+        cSimpleModule() {
 }
 
 // destructor
-BitTrackerApp::~BitTrackerApp (void)
-{
+BitTrackerApp::~BitTrackerApp(void) {
 }
 
 // overridden methods
-void BitTrackerApp::initialize (void)
-{
+void BitTrackerApp::initialize(void) {
 
-    this->localAddress_ = this->par ("localAddress").stringValue ();
-    this->localPort_ = this->par ("localPort");
-    this->connectPort_ = this->par ("connectPort");
+    this->localAddress_ = this->par("localAddress").stringValue();
+    this->localPort_ = this->par("localPort");
+    this->connectPort_ = this->par("connectPort");
 
-
-  // retrieve our name parameter.
+    // retrieve our name parameter.
     //this->name_ = this->par ("name").stringValue();
-  // if I am a client I initiate the transfer
+    // if I am a client I initiate the transfer
 
-    this->socket_ = new TCPSocket ();
+    this->socket_ = new TCPSocket();
 
-
-    this->socket_->bind (this->localAddress_.length () ?
-            IPvXAddressResolver ().resolve (this->localAddress_.c_str ()) : IPvXAddress (),
-            this->localPort_);
+    this->socket_->bind(
+            this->localAddress_.length() ?
+                    IPvXAddressResolver().resolve(this->localAddress_.c_str()) :
+                    IPvXAddress(), this->localPort_);
 
     // register ourselves as the callback object
-    bool *passive = new bool (true);
-    this->socket_->setCallbackObject (this, passive);  // send the flag
+    bool *passive = new bool(true);
+    this->socket_->setCallbackObject(this, passive);  // send the flag
 
     // do not forget to set the outgoing gate
-    this->socket_->setOutputGate (gate ("tcpOut"));
+    this->socket_->setOutputGate(gate("tcpOut"));
 
     // now listen for incoming connections.  This version is the forking version where
     // upon every new incoming connection, a new socket is created.
-    this->socket_->listen ();
+    this->socket_->listen();
 
-    EV << "+++ Peer: " << this->localAddress_ << " created a listening socket with "
-       << "connection ID = " << this->socket_->getConnectionId () << " +++" << endl;
+    EV << "+++ Peer: " << this->localAddress_
+              << " created a listening socket with " << "connection ID = "
+              << this->socket_->getConnectionId() << " +++" << endl;
 
     // now save this socket in our map
-    this->socketMap_.addSocket (this->socket_);
+    this->socketMap_.addSocket(this->socket_);
 
-    cerr << "end BitTracker init" << endl;
 }
 
 void BitTrackerApp::socketEstablished(int connId, void *yourPtr) {
     EV << "=== Peer: " << this->localAddress_
-       << " received socketEstablished message on connID " << connId << " ===" << endl;
+              << " received socketEstablished message on connID " << connId
+              << " ===" << endl;
 }
 
-void BitTrackerApp::socketDataArrived(int connId, void *, cPacket *msg, bool urgent) {
+void BitTrackerApp::socketDataArrived(int connId, void *, cPacket *msg,
+        bool urgent) {
     EV << "=== Peer: " << this->localAddress_
-       << " received socketDataArrived message. ===" << endl;
+              << " received socketDataArrived message. ===" << endl;
 
     //This is going to be a request for the peers, so we will simply return the list of peers.
-    cerr << "before cast" << endl;
-        Tracker_Req *req = dynamic_cast<Tracker_Req *> (msg);
-        if (!req) {
-            EV << "Arriving packet is not of type CS_Req" << endl;
-        } else {
-            //EV << "Arriving packet: Requestor ID = " << req->getId ()
-            //   << ", Requested filename = " << req->getFile ()  << endl;
-
-            streampos size;
-            char * memblock;
-            //TODO:  here this will send the list of peers, so that the client can ask for the pieces
-        //    memblock = peers_.getBytes();
-     //      // now send a response
-            this->sendResponse (connId, this->localAddress_.c_str (), memblock, size);
-            delete[] memblock;
-        }
-    //}
+    Tracker_Req *req = dynamic_cast<Tracker_Req *>(msg);
+    if (!req) {
+        EV << "Arriving packet is not of type Tracker_Req" << endl;
+    } else {
+        this->sendResponse(connId, this->localAddress_.c_str(), NULL);
+        this->newPeerApp(req->getId());
+    }
 
     delete msg;
 }
 
-void BitTrackerApp::sendResponse (int connId, const char *id, char* data, unsigned long size) {
+void BitTrackerApp::sendResponse(int connId, const char *id, char* data) {
     EV << "=== Peer: " << this->localAddress_ << " sendResponse. "
-       << "Sending ID: " << id << ", size: " << size << " ===" << endl;
+              << "Sending ID: " << id << " ===" << endl;
 
-    cMessage *temp_msg = new cMessage ("temp");
-    TCPCommand *temp_cmd = new TCPCommand ();
-    temp_cmd->setConnId (connId);
-    temp_msg->setControlInfo (temp_cmd);
+    cMessage *temp_msg = new cMessage("temp");
+    TCPCommand *temp_cmd = new TCPCommand();
+    temp_cmd->setConnId(connId);
+    temp_msg->setControlInfo(temp_cmd);
 
-    TCPSocket *socket = this->socketMap_.findSocketFor (temp_msg);
+    TCPSocket *socket = this->socketMap_.findSocketFor(temp_msg);
 
     if (!socket) {
         EV << ">>> Cannot find socket to send request <<< " << endl;
     } else {
-        Tracker_Resp *resp = new Tracker_Resp ();
-        resp->setType ((int)Tracker_RESPONSE);
-        resp->setId (id);
-        //resp->setSize (size);
+        Tracker_Resp *resp = new Tracker_Resp();
+        resp->setType((int) Tracker_RESPONSE);
+        resp->setId(id);
+        int count = 0;
+        resp->setPeersArraySize(peers_.size());
+        for(std::set<string>::const_iterator it = peers_.begin();
+                 it != peers_.end(); ++it, ++count) {
+            resp->setPeers(count, it->c_str());
+        }
         // need to set the byte length else nothing gets sent as I found the hard way
-        resp->setByteLength (128);  // I think we can set any length we want :-)
-        //resp->setDataArraySize(size);
-        //for(int i = 0; i < size; ++i)
-            //resp->setData(i, data[i]);
-        socket->send (resp);
+        resp->setByteLength(128);  // I think we can set any length we want :-)
+        socket->send(resp);
     }
 
     // cleanup
@@ -127,80 +116,82 @@ void BitTrackerApp::sendResponse (int connId, const char *id, char* data, unsign
 }
 
 void BitTrackerApp::handleMessage(cMessage *msg) {
+
     TCPSocket *socket = this->socketMap_.findSocketFor(msg);
 
-    if(!socket) {
-        EV << "=== Peer: " << this->localAddress_ << " **No socket yet ** ===" << endl;
+    if (!socket) {
 
-        //int connId = cmd->getConnId();
-        // debugging
-        EV << "+++ Peer: " << this->localAddress_ << " creating a new socket with "
-           << "connection ID = " << " ===" << endl;
+        TCPCommand *cmd = dynamic_cast<TCPCommand*>(msg->getControlInfo());
+        if (!cmd) {
+            throw cRuntimeError("ERROR in handleMessage!");
+        } else {
+            EV << "=== Peer: " << this->localAddress_
+                      << " **No socket yet ** ===" << endl;
 
-        // notice that we must use the other constructor of TCPSocket so that it
-        // will use the underlying connID that was created after an incoming
-        // connection establishment message
-        TCPSocket *new_socket = new TCPSocket (msg);
+            int connId = cmd->getConnId();
+            // debugging
+            EV << "+++ Peer: " << this->localAddress_
+                      << " creating a new socket with " << "connection ID = "
+                      << " ===" << endl;
 
-        // register ourselves as the callback object
-        bool *passive = new bool (true);
-        new_socket->setCallbackObject (this, passive);
+            // notice that we must use the other constructor of TCPSocket so that it
+            // will use the underlying connID that was created after an incoming
+            // connection establishment message
+            TCPSocket *new_socket = new TCPSocket(msg);
 
-        // do not forget to set the outgoing gate
-        new_socket->setOutputGate (gate ("tcpOut"));
+            // register ourselves as the callback object
+            bool *passive = new bool(true);
+            new_socket->setCallbackObject(this, passive);
 
-        // another thing I learned the hard way is that we must set up the data trasnfer
-        // mode for this new socket
-        new_socket->setDataTransferMode (this->socket_->getDataTransferMode ());
+            // do not forget to set the outgoing gate
+            new_socket->setOutputGate(gate("tcpOut"));
 
-        // now save this socket in our map
-        this->socketMap_.addSocket (new_socket);
+            // another thing I learned the hard way is that we must set up the data trasnfer
+            // mode for this new socket
+            new_socket->setDataTransferMode(
+                    this->socket_->getDataTransferMode());
 
-        cerr << "handlemessage end" << endl;
-        // process the message
-        new_socket->processMessage (msg);
+            // now save this socket in our map
+            this->socketMap_.addSocket(new_socket);
 
+            // process the message
+            new_socket->processMessage(msg);
+        }
+
+    } else {
+        EV << "Delay" << simTime() << msg->getTimestamp() << endl;
+        /*if(msg->getTimestamp() != 0)
+            emit(c2sSignal, simTime() - msg->getTimestamp());*/
+
+        socket->processMessage(msg);
     }
 }
 
-void BitTrackerApp::socketFailure (int connId, void *yourPtr, int code) {
+void BitTrackerApp::socketFailure(int connId, void *yourPtr, int code) {
 
 }
 
 void BitTrackerApp::socketPeerClosed(int connId, void *) {
-    cMessage *temp_msg = new cMessage ("temp");
-    TCPCommand *temp_cmd = new TCPCommand ();
-    temp_cmd->setConnId (connId);
-    temp_msg->setControlInfo (temp_cmd);
+cMessage *temp_msg = new cMessage("temp");
+TCPCommand *temp_cmd = new TCPCommand();
+temp_cmd->setConnId(connId);
+temp_msg->setControlInfo(temp_cmd);
 
-    TCPSocket *socket = this->socketMap_.findSocketFor (temp_msg);
-    this->socketMap_.removeSocket(socket);
+TCPSocket *socket = this->socketMap_.findSocketFor(temp_msg);
+this->socketMap_.removeSocket(socket);
 }
 
 // there was no need for us to have provided this method, however, if
 // you want to gather statistics of your simulation, this is the
 // method you need to add
-void BitTrackerApp::finish (void)
-{
-    EV << "=== finish called" << endl;
-    // finalize any statistics collection
+void BitTrackerApp::finish(void) {
+EV << "=== finish called" << endl;
+// finalize any statistics collection
 }
 
-char * BitTrackerApp::newPeerApp(char* name){
-    std::string peerName(name);
-    peers_.insert(peerName);
-    string accum = "";
-    //TODO: MAKE THIS PERMAMENT
-    for(set<string>::iterator it = peers_.begin(); it!=peers_.end();++it ){
-        accum += *it + ";";
-    }
-    char * writable = new char[accum.size() + 1];
-    std::copy(accum.begin(), accum.end(), writable);
-    writable[accum.size()] = '\0'; // don't forget the terminating 0
-
-    return writable;
-    // don't forget to free the string after finished using it
-
+void BitTrackerApp::newPeerApp(string peerName) {
+    if(peers_.find(peerName) != peers_.end())
+        peers_.insert(peerName);
 }
 
 // ******* RDT_1_0 SimpleModule *******

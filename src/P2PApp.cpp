@@ -1,7 +1,6 @@
 // Implementation of the module.
 // Adapted from the tictoc tutorial
 
-#include "CSAppMsg_m.h"
 #include "P2PApp.h"
 
 #include "IPvXAddressResolver.h"
@@ -101,8 +100,6 @@ void P2PApp::close() {
               << endl;
     EV << "issuing CLOSE command\n";
 
-    setStatusString("closing");
-
     this->socket_->close();
 }
 
@@ -130,11 +127,9 @@ void P2PApp::socketDataArrived(int connId, void *, cPacket *msg, bool urgent) {
             EV << "Arriving packet: Responder ID = " << resp->getId() << endl;
         }
 
-        //this->handleResponseFromTracker()
-        //TODO
+        this->handleResponseFromTracker(resp);
     }
-    case Peer_INFO_REQUEST:
-    {
+    case Peer_INFO_REQUEST: {
         Peer_InfoReq *resp = dynamic_cast<Peer_InfoReq *>(msg);
 
         if (!resp) {
@@ -143,11 +138,11 @@ void P2PApp::socketDataArrived(int connId, void *, cPacket *msg, bool urgent) {
             EV << "Arriving packet: Responder ID = " << resp->getId() << endl;
         }
 
-        //this->makePeerResponse()
-        //TODO: always do -1 case
+        Peer_InfoResp* info_resp = this->makePeerListResponse();
+
+        //TODO: SOCKET_MAP
     }
-    case Peer_INFO_RESPONSE:
-    {
+    case Peer_INFO_RESPONSE: {
         Peer_InfoResp *resp = dynamic_cast<Peer_InfoResp *>(msg);
 
         if (!resp) {
@@ -156,11 +151,11 @@ void P2PApp::socketDataArrived(int connId, void *, cPacket *msg, bool urgent) {
             EV << "Arriving packet: Responder ID = " << resp->getId() << endl;
         }
 
-        //this->handleResponseFromPeerChunkList()
+        this->handleResponsefromPeerChunkList(resp);
+
         //TODO: change
     }
-    case Peer_CHUNK_REQUEST:
-    {
+    case Peer_CHUNK_REQUEST: {
         Peer_ChunkReq *resp = dynamic_cast<Peer_ChunkReq *>(msg);
 
         if (!resp) {
@@ -169,11 +164,11 @@ void P2PApp::socketDataArrived(int connId, void *, cPacket *msg, bool urgent) {
             EV << "Arriving packet: Responder ID = " << resp->getId() << endl;
         }
 
+
         //this->makePeerResponse()
         //TODO: not -1 case
     }
-    case Peer_CHUNK_RESPONSE:
-    {
+    case Peer_CHUNK_RESPONSE: {
         Peer_ChunkResp *resp = dynamic_cast<Peer_ChunkResp *>(msg);
 
         if (!resp) {
@@ -185,35 +180,33 @@ void P2PApp::socketDataArrived(int connId, void *, cPacket *msg, bool urgent) {
         //this->handleResponsePeerSingleChunk()
         //TODO
     }
-    default:
-    {
-            EV << "Arriving packet is not of type that is recognized!!" << endl;
+    default: {
+        EV << "Arriving packet is not of type that is recognized!!" << endl;
     }
     }
-
 
     delete msg;
 }
 /*
-void P2PApp::handleResponse(CS_Resp *res, int connId) {
-    if (res->getDataArraySize() > 0) {
+ void P2PApp::handleResponse(CS_Resp *res, int connId) {
+ if (res->getDataArraySize() > 0) {
 
-         vector<char> curChunk;
-         for(int i = 0; i < res->getDataArraySize(); ++i) {
-         curChunk.push_back(res->getData(i));
-         }
-         file_.push_back(curChunk);
+ vector<char> curChunk;
+ for(int i = 0; i < res->getDataArraySize(); ++i) {
+ curChunk.push_back(res->getData(i));
+ }
+ file_.push_back(curChunk);
 
-         //modify for bittorrent to just ask for new chunk
-         this->sendRequest(connId);
-        ofstream myfile;
-        myfile.open("dummy-P2P.txt");
-        for (int i = 0; i < res->getDataArraySize(); ++i) {
-            myfile << res->getData(i);
-        }
-        myfile.close();
-    }
-}*/
+ //modify for bittorrent to just ask for new chunk
+ this->sendRequest(connId);
+ ofstream myfile;
+ myfile.open("dummy-P2P.txt");
+ for (int i = 0; i < res->getDataArraySize(); ++i) {
+ myfile << res->getData(i);
+ }
+ myfile.close();
+ }
+ }*/
 
 void P2PApp::sendRequest(int connId, const char* id, string fname) {
     Tracker_Req *req = new Tracker_Req();
@@ -274,29 +267,58 @@ void P2PApp::setStatusString(const char *s) {
     }
 }
 
-char * P2PApp::makePeerResponse(char * bytes) {
-    int value = atoi(bytes);
-    if (value == -1) {
-        stringstream chunks;
-        chunks << "i";
-        for (int i = 0; i < 20; ++i) {
-            if (chunks_[i] == true) {
-                chunks << i;
-                chunks << ";";
-            }
-        }
+Peer_InfoReq* P2PApp::makePeerListRequest(string peer) {
+    Peer_InfoReq* req = new Peer_InfoReq();
+    req->setId(this->localAddress_.c_str());
+    req->setType((int)Peer_INFO_REQUEST);
 
-        return P2PApp::ss_to_charp(chunks);
-    } else {
-        return data_[value];
-    }
+    return req;
 }
 
-char * P2PApp::makeRequestForPeerAllChunks() {
-    int value = -1;
-    stringstream chunks;
-    chunks << value;
-    return P2PApp::ss_to_charp(chunks); //remember to delete the mem
+Peer_ChunkReq* P2PApp::makePeerChunkRequest(string peer, int chunk) {
+    Peer_ChunkReq* req = new Peer_ChunkReq();
+    req->setId(this->localAddress_.c_str());
+    req->setChunk(chunk);
+    req->setType((int)Peer_CHUNK_REQUEST);
+
+    return req;
+}
+
+Peer_InfoResp* P2PApp::makePeerListResponse(void) {
+    Peer_InfoResp* resp = new Peer_InfoResp();
+    resp->setType((int)Peer_INFO_RESPONSE);
+    resp->setId(this->localAddress_.c_str());
+
+    int count = 0;
+    for (int i = 0; i < 20; ++i) {
+        if (chunks_[i] == true)
+            ++count;
+    }
+    resp->setChunksArraySize(count);
+    count = 0;
+    for (int i = 0; i < 20; ++i) {
+        if (chunks_[i] == true) {
+            resp->setChunks(count, i);
+            ++count;
+        }
+    }
+
+    return resp;
+}
+
+Peer_ChunkResp* P2PApp::makePeerChunkResponse(Peer_ChunkReq* req) {
+    Peer_ChunkResp* resp = new Peer_ChunkResp();
+    resp->setType((int)Peer_CHUNK_RESPONSE);
+    resp->setId(this->localAddress_.c_str());
+
+    resp->setDataArraySize(dataSize_[req->getChunk()]);
+
+    char* d = data_[req->getChunk()];
+    for (int i = 0; i < dataSize_[req->getChunk()]; ++i) {
+        resp->setData(i, d[i]);
+    }
+
+    return resp;
 }
 
 bool P2PApp::fileComplete() {
@@ -308,58 +330,55 @@ bool P2PApp::fileComplete() {
     return true;
 }
 
-void P2PApp::handleResponseFromTracker(char * list) {
-    std::string str(list);
-    vector<string> newPeers = P2PApp::split(str, ';');
-    for (int i = 0; i < newPeers.size(); ++i) {
-        peers_.insert(newPeers[i]);
-        pendingRequests_.insert(std::pair<string, int>(newPeers[i], -1));
+void P2PApp::handleResponseFromTracker(Tracker_Resp* resp) {
+    for (int i = 0; i < resp->getPeersArraySize(); ++i) {
+        peers_.insert(resp->getPeers(i));
+        pendingRequests_.insert(std::pair<string, int>(resp->getPeers(i), -1));
+
+        Peer_InfoReq* req = this->makePeerListRequest(resp->getPeers(i));
+
     }
 }
 
-void P2PApp::handleResponsefromPeerChunkList(char * list, char * peer) {
-    string peerName(peer);
-    std::string str(list);
-    vector<string> chunks = P2PApp::split(str, ';');
-    for (int i = 0; i < chunks.size(); ++i) {
-        int value = atoi(chunks[i].c_str());
-        peerChunks_[peerName].insert(value);
+void P2PApp::handleResponsefromPeerChunkList(Peer_InfoResp* resp) {
+    std::string name(resp->getId());
+    set<int> pChunks;
+    for (int i = 0; i < resp->getChunksArraySize(); ++i) {
+        pChunks.insert(resp->getChunks(i));
     }
+    peerChunks_.insert(std::pair<string, set<int>>(name, pChunks));
+
+    this->makeRequestFor(name);
 }
 
-void P2PApp::handleResponsefromPeerSingleChunk(char * data, char * peer) {
-    string peerName(peer);
-    for (int it = 0; it < chunks_.size(); ++it) {
-        int value = pendingRequests_[peerName];
-        pendingRequests_[peerName] = -1;
-        data_[value] = data;
-        chunks_[value] = true;
+void P2PApp::handleResponsefromPeerSingleChunk(Peer_ChunkResp* resp) {
+    std::string peerName(resp->getId());
+    int value = pendingRequests_[peerName];
+    pendingRequests_[peerName] = -1;
+    char* incomingData = new char[resp->getDataArraySize()];
+    for(int i = 0; i < resp->getDataArraySize(); ++i) {
+        incomingData[i] = resp->getData(i);
     }
+    chunks_[value] = true;
+    data_[value] = incomingData;
 }
 
-char * P2PApp::makeRequestFor(char * peer) {
+void P2PApp::makeRequestFor(string peer) {
     string peerName(peer);
     set<int> peerChunk = peerChunks_[peerName];
     for (set<int>::iterator i = peerChunk.begin(); i != peerChunk.end(); ++i) {
-        if (!chunks_[*i]) {
-            stringstream chunks;
-            chunks << *i;
+        if (!chunks_[*i] && !activeChunks_[*i]) {
             pendingRequests_[peerName] = *i;
-            return P2PApp::ss_to_charp(chunks); //remember to delete the mem
+            activeChunks_[*i] = true;
+
+            Peer_ChunkReq* req = this->makePeerChunkRequest(peer, *i);
+
+            return;
         }
     }
-    return NULL;
 }
 
-std::vector<std::string>& P2PApp::split(const std::string &s, char delim,
-        std::vector<std::string> &elems) {
-    std::stringstream ss(s);
-    std::string item;
-    while (std::getline(ss, item, delim)) {
-        elems.push_back(item);
-    }
-    return elems;
-}
+//void P2PApp::sendRequest()
 
 char* P2PApp::ss_to_charp(std::stringstream& accum) {
     char * writable;
@@ -369,10 +388,4 @@ char* P2PApp::ss_to_charp(std::stringstream& accum) {
     writable[str.length()] = '\0'; // don't forget the terminating 0
 
     return writable;
-}
-
-std::vector<std::string> P2PApp::split(const std::string &s, char delim) {
-    std::vector<std::string> elems;
-    split(s, delim, elems);
-    return elems;
 }

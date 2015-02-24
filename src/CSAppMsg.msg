@@ -36,7 +36,6 @@ packet Tracker_Resp extends BT_Packet
 {
     string  id;			// ID of the responder
     string peers[];
-    int numPeers;
 };
 
 packet Peer_Packet
@@ -46,23 +45,25 @@ packet Peer_Packet
 
 packet Peer_InfoReq extends BT_Packet
 {
+    string id;
 };
 
 packet Peer_InfoResp extends BT_Packet
 {
-	int chunks[];
-	int size;   
+    string id;
+	int chunks[]; 
 };
 
 packet Peer_ChunkReq extends BT_Packet
 {
-	int chunk;   
+    string id;
+	int chunk; 
 };
 
 packet Peer_ChunkResp extends BT_Packet
 {
-    char data[];
-    int size;   
+    string id;
+    char data[];  
 };
 
     

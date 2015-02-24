@@ -122,7 +122,6 @@ inline void doUnpacking(cCommBuffer *b, Tracker_Req& obj) {obj.parsimUnpack(b);}
  * {
  *     string id;			// ID of the responder
  *     string peers[];
- *     int numPeers;
  * }
  * </pre>
  */
@@ -132,7 +131,6 @@ class Tracker_Resp : public ::BT_Packet
     opp_string id_var;
     opp_string *peers_var; // array ptr
     unsigned int peers_arraysize;
-    int numPeers_var;
 
   private:
     void copy(const Tracker_Resp& other);
@@ -157,15 +155,13 @@ class Tracker_Resp : public ::BT_Packet
     virtual unsigned int getPeersArraySize() const;
     virtual const char * getPeers(unsigned int k) const;
     virtual void setPeers(unsigned int k, const char * peers);
-    virtual int getNumPeers() const;
-    virtual void setNumPeers(int numPeers);
 };
 
 inline void doPacking(cCommBuffer *b, Tracker_Resp& obj) {obj.parsimPack(b);}
 inline void doUnpacking(cCommBuffer *b, Tracker_Resp& obj) {obj.parsimUnpack(b);}
 
 /**
- * Class generated from <tt>CSAppMsg.msg:43</tt> by nedtool.
+ * Class generated from <tt>CSAppMsg.msg:42</tt> by nedtool.
  * <pre>
  * packet Peer_Packet
  * {
@@ -203,16 +199,18 @@ inline void doPacking(cCommBuffer *b, Peer_Packet& obj) {obj.parsimPack(b);}
 inline void doUnpacking(cCommBuffer *b, Peer_Packet& obj) {obj.parsimUnpack(b);}
 
 /**
- * Class generated from <tt>CSAppMsg.msg:48</tt> by nedtool.
+ * Class generated from <tt>CSAppMsg.msg:47</tt> by nedtool.
  * <pre>
  * packet Peer_InfoReq extends BT_Packet
  * {
+ *     string id;
  * }
  * </pre>
  */
 class Peer_InfoReq : public ::BT_Packet
 {
   protected:
+    opp_string id_var;
 
   private:
     void copy(const Peer_InfoReq& other);
@@ -231,6 +229,8 @@ class Peer_InfoReq : public ::BT_Packet
     virtual void parsimUnpack(cCommBuffer *b);
 
     // field getter/setter methods
+    virtual const char * getId() const;
+    virtual void setId(const char * id);
 };
 
 inline void doPacking(cCommBuffer *b, Peer_InfoReq& obj) {obj.parsimPack(b);}
@@ -241,17 +241,17 @@ inline void doUnpacking(cCommBuffer *b, Peer_InfoReq& obj) {obj.parsimUnpack(b);
  * <pre>
  * packet Peer_InfoResp extends BT_Packet
  * {
+ *     string id;
  *     int chunks[];
- *     int size;
  * }
  * </pre>
  */
 class Peer_InfoResp : public ::BT_Packet
 {
   protected:
+    opp_string id_var;
     int *chunks_var; // array ptr
     unsigned int chunks_arraysize;
-    int size_var;
 
   private:
     void copy(const Peer_InfoResp& other);
@@ -270,12 +270,12 @@ class Peer_InfoResp : public ::BT_Packet
     virtual void parsimUnpack(cCommBuffer *b);
 
     // field getter/setter methods
+    virtual const char * getId() const;
+    virtual void setId(const char * id);
     virtual void setChunksArraySize(unsigned int size);
     virtual unsigned int getChunksArraySize() const;
     virtual int getChunks(unsigned int k) const;
     virtual void setChunks(unsigned int k, int chunks);
-    virtual int getSize() const;
-    virtual void setSize(int size);
 };
 
 inline void doPacking(cCommBuffer *b, Peer_InfoResp& obj) {obj.parsimPack(b);}
@@ -286,6 +286,7 @@ inline void doUnpacking(cCommBuffer *b, Peer_InfoResp& obj) {obj.parsimUnpack(b)
  * <pre>
  * packet Peer_ChunkReq extends BT_Packet
  * {
+ *     string id;
  *     int chunk;
  * }
  * </pre>
@@ -293,6 +294,7 @@ inline void doUnpacking(cCommBuffer *b, Peer_InfoResp& obj) {obj.parsimUnpack(b)
 class Peer_ChunkReq : public ::BT_Packet
 {
   protected:
+    opp_string id_var;
     int chunk_var;
 
   private:
@@ -312,6 +314,8 @@ class Peer_ChunkReq : public ::BT_Packet
     virtual void parsimUnpack(cCommBuffer *b);
 
     // field getter/setter methods
+    virtual const char * getId() const;
+    virtual void setId(const char * id);
     virtual int getChunk() const;
     virtual void setChunk(int chunk);
 };
@@ -320,21 +324,21 @@ inline void doPacking(cCommBuffer *b, Peer_ChunkReq& obj) {obj.parsimPack(b);}
 inline void doUnpacking(cCommBuffer *b, Peer_ChunkReq& obj) {obj.parsimUnpack(b);}
 
 /**
- * Class generated from <tt>CSAppMsg.msg:63</tt> by nedtool.
+ * Class generated from <tt>CSAppMsg.msg:64</tt> by nedtool.
  * <pre>
  * packet Peer_ChunkResp extends BT_Packet
  * {
+ *     string id;
  *     char data[];
- *     int size;
  * }
  * </pre>
  */
 class Peer_ChunkResp : public ::BT_Packet
 {
   protected:
+    opp_string id_var;
     char *data_var; // array ptr
     unsigned int data_arraysize;
-    int size_var;
 
   private:
     void copy(const Peer_ChunkResp& other);
@@ -353,12 +357,12 @@ class Peer_ChunkResp : public ::BT_Packet
     virtual void parsimUnpack(cCommBuffer *b);
 
     // field getter/setter methods
+    virtual const char * getId() const;
+    virtual void setId(const char * id);
     virtual void setDataArraySize(unsigned int size);
     virtual unsigned int getDataArraySize() const;
     virtual char getData(unsigned int k) const;
     virtual void setData(unsigned int k, char data);
-    virtual int getSize() const;
-    virtual void setSize(int size);
 };
 
 inline void doPacking(cCommBuffer *b, Peer_ChunkResp& obj) {obj.parsimPack(b);}
