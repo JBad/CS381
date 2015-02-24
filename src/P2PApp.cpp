@@ -33,12 +33,46 @@ void P2PApp::initialize(void) {
 
     cout << "start P2P init" << endl;
 
-    this->connect();
+    string dataTransferMode = this->par ("dataTransferMode").stringValue ();
 
-    //cMessage *timer_msg = new cMessage("timer");
-    //this->scheduleAt(simTime() + exponential(0.001), timer_msg);
+    // create a new socket for the listening role
+    this->socket_ = new TCPSocket ();
 
-    cout << "end P2P init" << endl;
+    // decide the data transfer mode
+    if (!dataTransferMode.compare ("bytecount"))
+        this->socket_->setDataTransferMode (TCP_TRANSFER_BYTECOUNT);
+    else if (!dataTransferMode.compare ("object"))
+        this->socket_->setDataTransferMode (TCP_TRANSFER_OBJECT);
+    else if (!dataTransferMode.compare ("bytestream"))
+        this->socket_->setDataTransferMode (TCP_TRANSFER_BYTESTREAM);
+    else { // error
+        EV << "=== Bad data transfer mode value. Assuming object" << endl;
+        this->socket_->setDataTransferMode (TCP_TRANSFER_OBJECT);
+    }
+
+    this->socket_->bind (this->localAddress_.length () ?
+            IPvXAddressResolver ().resolve (this->localAddress_.c_str ()) : IPvXAddress (),
+            this->localPort_);
+
+    bool *passive = new bool (true);
+    this->socket_->setCallbackObject (this, passive);  // send the flag
+
+    // do not forget to set the outgoing gate
+    this->socket_->setOutputGate (gate ("tcpOut"));
+
+    this->socket_->listen ();
+
+    // debugging
+    EV << "+++ Peer: " << this->localAddress_ << " created a listening socket with "
+       << "connection ID = " << this->socket_->getConnectionId () << " +++" << endl;
+
+    // now save this socket in our map
+    this->socketMap_.addSocket (this->socket_);
+
+    // now we start a timer so that when it kicks in, we make a connection to another peer
+    cMessage *timer_msg = new cMessage ("timer");
+    this->scheduleAt (simTime () + exponential (0.001), timer_msg);
+
 }
 
 /** handle the timeout method */
@@ -50,7 +84,11 @@ void P2PApp::handleTimer(cMessage *msg) {
     // cleanup the incoming message
     delete msg;
 
-    this->connect();
+
+    //connect to tracker
+    this->connect(this->connectAddress_);
+
+
 }
 
 // determines how to handle a message (note that an message is
@@ -59,34 +97,64 @@ void P2PApp::handleMessage(cMessage *msg) {
     if (msg->isSelfMessage()) {
         this->handleTimer(msg);
     } else {
-        this->socket_->processMessage(msg);
-    }
+        TCPSocket *socket = this->socketMap_.findSocketFor (msg);
+        if(!socket) {
+            TCPCommand *cmd = dynamic_cast<TCPCommand *>(msg->getControlInfo());
 
-    return;
+            if(!cmd) {
+                throw cRuntimeError("P2PApp::handleMessage: no TCPCommand control info in message (not from TCP?)");
+            } else {
+                int connId = cmd->getConnId();
+
+                EV << "+++ Peer: " << this->localAddress_ << " creating a new socket with "
+                   << "connection ID = " << connId << " ===" << endl;
+
+                TCPSocket *new_socket = new TCPSocket(msg);
+
+                bool *passive = new bool(true);
+                new_socket->setCallbackObject(this, passive);
+
+                new_socket->setOutputGate(gate("tcpOut"));
+
+                //new_socket->setDataTransferMode(this->socket_->getDataTransferMode());
+
+                // now save this socket in our map
+                this->socketMap_.addSocket (new_socket);
+
+                // process the message
+                new_socket->processMessage (msg);
+            }
+        } else {
+            socket->processMessage (msg);
+        }
+    }
 }
 
 // connect to peer i
-void P2PApp::connect() {
+void P2PApp::connect(char* connectAddress) {
     cout << "startConnect" << endl;
     EV << "=== Peer: " << this->localAddress_ << " received connect message"
               << endl;
     EV << "issuing connect command\n";
     setStatusString("connecting");
 
+    TCPSocket *new_socket = new TCPSocket();
+
+    new_socket->setOutputGate (gate ("tcpOut"));
     // we allocate a socket to be used for actively connecting to the peer and
     // transferring data over it.
-    socket_ = new TCPSocket();
-    socket_->setOutputGate(gate("tcpOut"));
 
     socket_->setDataTransferMode(this->socket_->getDataTransferMode());
 
     // issue a connect request
     socket_->connect(
-            IPvXAddressResolver().resolve(this->connectAddress_.c_str()),
+            IPvXAddressResolver().resolve(connectAddress),
             this->connectPort_);
 
-    socket_->setCallbackObject(this, NULL);
+    bool *passive = new bool(false);
+    socket_->setCallbackObject(this, passive);
 
+    this->socketMap_.addSocket (new_socket);
     // debugging
     EV << "+++ Peer: " << this->localAddress_ << " created a new socket with "
               << "connection ID = " << socket_->getConnectionId() << " ==="
@@ -210,7 +278,7 @@ void P2PApp::socketDataArrived(int connId, void *, cPacket *msg, bool urgent) {
 
 void P2PApp::sendRequest(int connId, const char* id, string fname) {
     Tracker_Req *req = new Tracker_Req();
-    req->setType(int(Tracker_REQUEST));
+    req->setType((int)Tracker_REQUEST);
     req->setId(this->localAddress_.c_str());
     //req->setFile(fname.c_str());
 

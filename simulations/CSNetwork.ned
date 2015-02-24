@@ -15,8 +15,8 @@
 
 package cs381.simulations;
 
-import cs381.ClientApp;
-import cs381.ServerApp;
+import cs381.P2PApp;
+import cs381.BitTrackerApp;
 
 // import all the inet defns as needed for our experiment
 import ned.DatarateChannel;
@@ -75,16 +75,17 @@ network P2PFlatNet
                 @display("is=vs");
         }
         
-        server1: StandardHost {
+        tracker: StandardHost {
         }
         
-        client1: StandardHost {
+        peer[3]: StandardHost {
         }
         
     connections:
         
-        server1.pppg++ <--> ethernetline <--> rte[0].pppg++;
-        client1.pppg++ <--> ethernetline <--> rte[0].pppg++;
+        peer[0].pppg++ <--> ethernetline <--> rte[0].pppg++;
+        peer[1].pppg++ <--> ethernetline <--> rte[0].pppg++;
+        peer[1].pppg++ <--> ethernetline <--> rte[0].pppg++;
 //        peer[2].pppg++ <--> ethernetline <--> rte[6].pppg++;
 //        
 //        rte[0].pppg++ <--> fiberline <--> rte[1].pppg++;

@@ -17,7 +17,7 @@ package cs381;
 
 import inet.applications.ITCPApp;
 
-simple ClientApp like ITCPApp {
+simple P2PApp like ITCPApp {
     parameters:
         string localAddress = default("");
         int localPort = default(1000);
@@ -30,7 +30,7 @@ simple ClientApp like ITCPApp {
         output tcpOut @labels(TCPCommand/down);
 }
 
-simple ServerApp like ITCPApp {
+simple BitTrackerApp like ITCPApp {
     parameters:
         string localAddress = default("");
         int localPort = default(1001);
