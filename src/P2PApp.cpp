@@ -208,7 +208,7 @@ void P2PApp::socketDataArrived(int connId, void *, cPacket *msg, bool urgent) {
 
         Peer_InfoResp* info_resp = this->makePeerListResponse();
 
-        //TODO: SOCKET_MAP
+        sendThisPacket(resp, info_resp);
     }
     case Peer_INFO_RESPONSE: {
         Peer_InfoResp *resp = dynamic_cast<Peer_InfoResp *>(msg);
@@ -221,7 +221,8 @@ void P2PApp::socketDataArrived(int connId, void *, cPacket *msg, bool urgent) {
 
         this->handleResponsefromPeerChunkList(resp);
 
-        //TODO: change
+        cMessage *newReq = makeRequestFor(resp->getId());
+        sendThisPacket(resp, newReq);
     }
     case Peer_CHUNK_REQUEST: {
         Peer_ChunkReq *resp = dynamic_cast<Peer_ChunkReq *>(msg);
@@ -231,10 +232,8 @@ void P2PApp::socketDataArrived(int connId, void *, cPacket *msg, bool urgent) {
         } else {
             EV << "Arriving packet: Responder ID = " << resp->getId() << endl;
         }
-
-
-        //this->makePeerResponse()
-        //TODO: not -1 case
+        cMessage * newMsg = makePeerChunkResponse(resp);
+        sendThisPacket(resp, newMsg);
     }
     case Peer_CHUNK_RESPONSE: {
         Peer_ChunkResp *resp = dynamic_cast<Peer_ChunkResp *>(msg);
@@ -244,9 +243,11 @@ void P2PApp::socketDataArrived(int connId, void *, cPacket *msg, bool urgent) {
         } else {
             EV << "Arriving packet: Responder ID = " << resp->getId() << endl;
         }
-
-        //this->handleResponsePeerSingleChunk()
-        //TODO
+        handleResponsefromPeerSingleChunk(resp);
+        if(!fileComplete()){
+            cMessage *newReq = makeRequestFor(resp->getId());
+            sendThisPacket(resp, newReq);
+        }
     }
     default: {
         EV << "Arriving packet is not of type that is recognized!!" << endl;
@@ -275,6 +276,15 @@ void P2PApp::socketDataArrived(int connId, void *, cPacket *msg, bool urgent) {
  myfile.close();
  }
  }*/
+
+
+ void P2PApp::sendThisPacket(cMessage *incoming, cMessage *outgoing){
+     TCPSocket *temp_soc = socketMap_.findSocketFor(incoming);
+
+     temp_soc->send(outgoing);
+
+}
+
 
 void P2PApp::sendRequest(int connId, const char* id, string fname) {
     Tracker_Req *req = new Tracker_Req();
@@ -431,7 +441,7 @@ void P2PApp::handleResponsefromPeerSingleChunk(Peer_ChunkResp* resp) {
     data_[value] = incomingData;
 }
 
-void P2PApp::makeRequestFor(string peer) {
+cMessage * P2PApp::makeRequestFor(string peer) {
     string peerName(peer);
     set<int> peerChunk = peerChunks_[peerName];
     for (set<int>::iterator i = peerChunk.begin(); i != peerChunk.end(); ++i) {
@@ -441,9 +451,10 @@ void P2PApp::makeRequestFor(string peer) {
 
             Peer_ChunkReq* req = this->makePeerChunkRequest(peer, *i);
 
-            return;
+            return req;
         }
     }
+    return NULL;
 }
 
 //void P2PApp::sendRequest()

@@ -108,11 +108,12 @@ protected:
    * Looks for peer in the list of peer and see what chunk this peer has, that we do not have
    * and sends a request for that chunk, if there is nothing new it returns null, CHECK this!
    */
-  virtual void makeRequestFor(string peer);
+  virtual cMessage * makeRequestFor(string peer);
 
 
   virtual void handleResponsefromPeerSingleChunk(Peer_ChunkResp* resp);
 
+  virtual void sendThisPacket(cMessage *incoming, cMessage *outgoing);
 
 private:
   string name_; // some name assigned to us
