@@ -86,8 +86,7 @@ void P2PApp::handleTimer(cMessage *msg) {
 
 
     //connect to tracker
-    this->connect(this->connectAddress_);
-
+    this->connect(this->connectAddress_.c_str());
 
 }
 
@@ -131,7 +130,7 @@ void P2PApp::handleMessage(cMessage *msg) {
 }
 
 // connect to peer i
-void P2PApp::connect(char* connectAddress) {
+void P2PApp::connect(const char* connectAddress) {
     cout << "startConnect" << endl;
     EV << "=== Peer: " << this->localAddress_ << " received connect message"
               << endl;
@@ -155,11 +154,14 @@ void P2PApp::connect(char* connectAddress) {
     socket_->setCallbackObject(this, passive);
 
     this->socketMap_.addSocket (new_socket);
+
+    if(this->socketMap_.size() == 1) {
+        this->sendRequest(new_socket->getConnectionId(), this->localAddress_.c_str());
+    }
     // debugging
     EV << "+++ Peer: " << this->localAddress_ << " created a new socket with "
               << "connection ID = " << socket_->getConnectionId() << " ==="
               << endl;
-    cout << "endConnect" << endl;
 }
 
 // close the peer side
@@ -286,7 +288,7 @@ void P2PApp::socketDataArrived(int connId, void *, cPacket *msg, bool urgent) {
 }
 
 
-void P2PApp::sendRequest(int connId, const char* id, string fname) {
+void P2PApp::sendRequest(int connId, const char* id) {
     Tracker_Req *req = new Tracker_Req();
     req->setType((int)Tracker_REQUEST);
     req->setId(this->localAddress_.c_str());
@@ -312,7 +314,7 @@ void P2PApp::socketEstablished(int connId, void *role) {
     } else {
         EV << "=== We are in active role and hence initiate a req ===" << endl;
 
-        this->sendRequest(connId, this->localAddress_.c_str(), "dummy.txt");
+        this->sendRequest(connId, this->localAddress_.c_str());
     }
 }
 

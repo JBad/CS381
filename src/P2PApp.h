@@ -43,13 +43,13 @@ public:
 
   //virtual void handleResponse (Tracker_Resp *res, int connId);
 
-  virtual void connect(void);
+  virtual void connect(const char* connectAddress);
 
   virtual void close(void);
 
   virtual void setStatusString(const char *s);
 
-  virtual void sendRequest (int connId, const char* id, string fname);
+  virtual void sendRequest (int connId, const char* id);
 
   virtual void finish (void);
 
